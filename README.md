@@ -120,4 +120,3 @@ const projects = data.docs
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Payload CMS Documentation](https://payloadcms.com/docs)
 - [React Documentation](https://react.dev)
-
