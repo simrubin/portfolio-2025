@@ -1,0 +1,213 @@
+"use client";
+
+import React from "react";
+import Image from "next/image";
+import { motion } from "motion/react";
+import type { ProjectResponse, ProjectSection, Media } from "@/types/payload";
+import { getMediaUrl, isVideo, isImage } from "@/lib/payload";
+
+interface ProjectDetailProps {
+  project: ProjectResponse;
+}
+
+export function ProjectDetail({ project }: ProjectDetailProps) {
+  return (
+    <div className="w-full max-w-4xl mx-auto">
+      {/* Project Title and Date */}
+      <motion.div
+        className="mb-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-base text-foreground mb-1">{project.title}</h1>
+        <p className="text-base text-secondary-foreground">
+          {new Date(project.publishedAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
+      </motion.div>
+
+      {/* Hero Image */}
+      <motion.div
+        className="relative w-full h-[300px] md:h-[500px] rounded-2xl overflow-hidden mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <Image
+          src={getMediaUrl(project.heroImage)}
+          alt={project.heroImage.alt || project.title}
+          fill
+          className="object-cover"
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+        />
+      </motion.div>
+
+      {/* Content Sections */}
+      {project.sections && project.sections.length > 0 && (
+        <div className="space-y-16">
+          {project.sections.map((section, index) => (
+            <ProjectSectionComponent
+              key={section.id || index}
+              section={section}
+              index={index}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface ProjectSectionComponentProps {
+  section: ProjectSection;
+  index: number;
+}
+
+function ProjectSectionComponent({
+  section,
+  index,
+}: ProjectSectionComponentProps) {
+  return (
+    <motion.section
+      className="space-y-6"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+    >
+      {/* Section Title */}
+      <h2 className="text-lg font-newsreader italic text-secondary-foreground my-2">
+        {section.sectionTitle}
+      </h2>
+
+      {/* Rich Text Content */}
+      <div className="prose prose-lg dark:prose-invert max-w-none">
+        <RichTextRenderer content={section.textBody} />
+      </div>
+
+      {/* Media Gallery */}
+      {section.media && section.media.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          {section.media.map((mediaItem, mediaIndex) => {
+            const media =
+              typeof mediaItem.mediaItem === "string"
+                ? null
+                : mediaItem.mediaItem;
+
+            if (!media) return null;
+
+            return (
+              <MediaItem
+                key={mediaItem.id || mediaIndex}
+                media={media}
+                caption={mediaItem.caption}
+              />
+            );
+          })}
+        </div>
+      )}
+    </motion.section>
+  );
+}
+
+interface MediaItemProps {
+  media: Media;
+  caption?: string;
+}
+
+function MediaItem({ media, caption }: MediaItemProps) {
+  return (
+    <div className="space-y-2">
+      {isVideo(media) ? (
+        <video
+          src={getMediaUrl(media)}
+          controls
+          className="w-full rounded-lg"
+          preload="metadata"
+        >
+          Your browser does not support the video tag.
+        </video>
+      ) : isImage(media) ? (
+        <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
+          <Image
+            src={getMediaUrl(media)}
+            alt={media.alt || caption || "Project media"}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        </div>
+      ) : null}
+
+      {caption && (
+        <p className="text-sm text-secondary-foreground italic">{caption}</p>
+      )}
+    </div>
+  );
+}
+
+interface RichTextRendererProps {
+  content: any;
+}
+
+function RichTextRenderer({ content }: RichTextRendererProps) {
+  if (!content || !content.root) {
+    return null;
+  }
+
+  const renderNode = (node: any): React.ReactNode => {
+    if (!node) return null;
+
+    // Handle text nodes
+    if (node.type === "text") {
+      let text = node.text;
+
+      // Apply formatting
+      if (node.format) {
+        if (node.format & 1) text = <strong key={node.text}>{text}</strong>; // Bold
+        if (node.format & 2) text = <em key={node.text}>{text}</em>; // Italic
+        if (node.format & 4) text = <u key={node.text}>{text}</u>; // Underline
+      }
+
+      return text;
+    }
+
+    // Handle element nodes
+    const children = node.children?.map((child: any, index: number) => (
+      <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
+    ));
+
+    switch (node.type) {
+      case "paragraph":
+        return <p>{children}</p>;
+      case "heading":
+        const HeadingTag = `h${node.tag}` as keyof JSX.IntrinsicElements;
+        return <HeadingTag>{children}</HeadingTag>;
+      case "list":
+        return node.listType === "bullet" ? (
+          <ul>{children}</ul>
+        ) : (
+          <ol>{children}</ol>
+        );
+      case "listitem":
+        return <li>{children}</li>;
+      case "quote":
+        return <blockquote>{children}</blockquote>;
+      case "link":
+        return (
+          <a href={node.fields?.url} target="_blank" rel="noopener noreferrer">
+            {children}
+          </a>
+        );
+      default:
+        return <>{children}</>;
+    }
+  };
+
+  return <>{renderNode(content.root)}</>;
+}

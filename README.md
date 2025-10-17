@@ -36,15 +36,19 @@ This will install dependencies for both the frontend and CMS workspaces.
 To run both applications in development mode, open two terminal windows:
 
 **Terminal 1 - Frontend (Next.js):**
+
 ```bash
 npm run dev:frontend
 ```
+
 The frontend will be available at `http://localhost:3000`
 
 **Terminal 2 - CMS (Payload):**
+
 ```bash
 npm run dev:cms
 ```
+
 The CMS admin panel will be available at `http://localhost:3000/admin` (or a different port if 3000 is taken)
 
 > **Note:** On first run, you'll need to create an admin user for the CMS.
@@ -75,6 +79,7 @@ PAYLOAD_SECRET=your-secret-key-here
 ```
 
 Generate a secure secret key for `PAYLOAD_SECRET`:
+
 ```bash
 openssl rand -base64 32
 ```
@@ -92,12 +97,14 @@ npm --workspace=apps/cms run build
 ### Tech Stack
 
 **Frontend:**
+
 - Next.js 15.5.4
 - React 19
 - TypeScript
 - Tailwind CSS 4
 
 **CMS:**
+
 - Payload CMS 3.59.1
 - Next.js 15.4.4
 - React 19
@@ -110,9 +117,9 @@ To fetch projects from the CMS in your Next.js frontend, you can use the Payload
 
 ```typescript
 // Example: Fetch all projects
-const response = await fetch('http://localhost:3000/api/projects')
-const data = await response.json()
-const projects = data.docs
+const response = await fetch("http://localhost:3000/api/projects");
+const data = await response.json();
+const projects = data.docs;
 ```
 
 ## Learn More
