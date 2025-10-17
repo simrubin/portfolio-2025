@@ -52,11 +52,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       {/* Back Button */}
       <div className="max-w-4xl mx-auto mb-8">
         <Link
-          href="/#projects"
+          href="/"
           className="inline-flex items-center gap-2 font-newsreader italic text-secondary-foreground hover:text-foreground transition-colors"
         >
           <Undo2Icon className="w-4 h-4" />
-          <span>Projects</span>
+          <span>Home</span>
         </Link>
       </div>
 
