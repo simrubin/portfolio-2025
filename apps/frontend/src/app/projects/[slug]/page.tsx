@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Undo2Icon } from "lucide-react";
 import { ProjectDetail } from "@/components/project-detail";
+import { ProjectTableOfContents } from "@/components/project-table-of-contents";
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/payload";
 import type { Metadata } from "next";
 import GradualBlur from "@/components/ui/GradualBlur";
@@ -61,7 +61,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         divCount={4}
         curve="ease-in-out"
       />
-      <div className="relative max-w-5xl mx-auto lg:flex lg:gap-8">
+      <div className="relative max-w-7xl mx-auto lg:flex lg:gap-8 xl:gap-12">
         {/* Sticky Back Button - Left Side (Desktop) */}
         <div className="hidden lg:block flex-shrink-0">
           <div className="sticky top-24">
@@ -92,6 +92,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
           <ProjectDetail project={project} />
         </div>
+
+        {/* Table of Contents - Right Side (Desktop) */}
+        {project.sections && project.sections.length > 0 && (
+          <div className="hidden xl:block flex-shrink-0">
+            <div className="sticky top-24">
+              <ProjectTableOfContents sections={project.sections} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

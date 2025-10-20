@@ -68,9 +68,12 @@ function ProjectSectionComponent({
   section,
   index,
 }: ProjectSectionComponentProps) {
+  const sectionId = generateSectionId(section.sectionTitle);
+
   return (
     <motion.section
-      className="space-y-6"
+      id={sectionId}
+      className="space-y-6 scroll-mt-24"
       initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, amount: 0.2 }}
@@ -217,4 +220,12 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
   };
 
   return <>{renderNode(content.root)}</>;
+}
+
+// Helper function to generate section IDs from titles
+export function generateSectionId(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
