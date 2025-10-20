@@ -51,7 +51,7 @@ export function ExperienceSection() {
         Experience.
       </motion.h2>
       <motion.div
-        className="flex flex-col gap-12 w-full"
+        className="flex flex-col gap-8 md:gap-12 w-full"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}

@@ -75,16 +75,31 @@ export async function getProjectBySlug(
 export function getMediaUrl(media: Media | string): string {
   if (typeof media === "string") {
     // If it's just an ID, construct the URL
-    return `${CMS_URL}/api/media/${media}`;
+    return `${CMS_URL}/api/media/file/${media}`;
   }
 
   // If the URL is already absolute, return it
-  if (media.url.startsWith("http")) {
+  if (media.url && media.url.startsWith("http")) {
     return media.url;
   }
 
-  // Otherwise, prepend the CMS URL
-  return `${CMS_URL}${media.url}`;
+  // If it starts with /api, /media, or is a relative path, prepend the CMS URL
+  if (media.url) {
+    return `${CMS_URL}${media.url}`;
+  }
+
+  // Fallback: use filename
+  if (media.filename) {
+    return `${CMS_URL}/media/${media.filename}`;
+  }
+
+  // Last resort: try to use the ID
+  if (media.id) {
+    return `${CMS_URL}/api/media/file/${media.id}`;
+  }
+
+  console.error("Unable to construct media URL", media);
+  return "";
 }
 
 /**

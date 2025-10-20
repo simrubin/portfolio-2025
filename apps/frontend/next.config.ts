@@ -17,6 +17,13 @@ const nextConfig: NextConfig = {
         port: "3000",
         pathname: "/api/media/**",
       },
+      // Local development - CMS API media file endpoint
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+        pathname: "/api/media/file/**",
+      },
       // Vercel deployment - media files
       {
         protocol: "https",

@@ -12,30 +12,26 @@ interface ProjectDetailProps {
 
 export function ProjectDetail({ project }: ProjectDetailProps) {
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-xs md:max-w-2xl mx-auto">
       {/* Project Title and Date */}
       <motion.div
         className="mb-12"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <h1 className="text-base text-foreground mb-1">{project.title}</h1>
         <p className="text-base text-secondary-foreground">
-          {new Date(project.publishedAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+          {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(2, "0")}.${new Date(project.publishedAt).getFullYear()}`}
         </p>
       </motion.div>
 
       {/* Hero Image */}
       <motion.div
-        className="relative w-full h-[300px] md:h-[500px] rounded-2xl overflow-hidden mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        className="relative w-full h-[200px] md:h-[400px] rounded-xl shadow-sm overflow-hidden mb-8"
+        initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
       >
         <Image
           src={getMediaUrl(project.heroImage)}
@@ -75,10 +71,10 @@ function ProjectSectionComponent({
   return (
     <motion.section
       className="space-y-6"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeInOut" }}
     >
       {/* Section Title */}
       <h2 className="text-lg font-newsreader italic text-secondary-foreground my-2">
@@ -86,7 +82,7 @@ function ProjectSectionComponent({
       </h2>
 
       {/* Rich Text Content */}
-      <div className="prose prose-lg dark:prose-invert max-w-none">
+      <div className="prose prose-lg dark:prose-invert max-w-none text-secondary-foreground ">
         <RichTextRenderer content={section.textBody} />
       </div>
 
@@ -145,7 +141,7 @@ function MediaItem({ media, caption }: MediaItemProps) {
       ) : null}
 
       {caption && (
-        <p className="text-sm text-secondary-foreground italic">{caption}</p>
+        <p className="text-sm text-accent-foreground italic">{caption}</p>
       )}
     </div>
   );
@@ -167,6 +163,9 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
     if (node.type === "text") {
       let text = node.text;
 
+      // Return empty string for empty text nodes instead of null
+      if (!text) return "";
+
       // Apply formatting
       if (node.format) {
         if (node.format & 1) text = <strong key={node.text}>{text}</strong>; // Bold
@@ -184,10 +183,11 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
 
     switch (node.type) {
       case "paragraph":
-        return <p>{children}</p>;
+        // Render empty paragraphs to preserve spacing
+        return <p>{children && children.length > 0 ? children : <br />}</p>;
       case "heading":
-        const HeadingTag = `h${node.tag}` as keyof JSX.IntrinsicElements;
-        return <HeadingTag>{children}</HeadingTag>;
+        const HeadingTag = `h${node.tag}` as keyof React.JSX.IntrinsicElements;
+        return React.createElement(HeadingTag, {}, children);
       case "list":
         return node.listType === "bullet" ? (
           <ul>{children}</ul>
@@ -200,10 +200,17 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
         return <blockquote>{children}</blockquote>;
       case "link":
         return (
-          <a href={node.fields?.url} target="_blank" rel="noopener noreferrer">
+          <a
+            href={node.fields?.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:font-semibold hover:decoration-foreground transition-all"
+          >
             {children}
           </a>
         );
+      case "linebreak":
+        return <br />;
       default:
         return <>{children}</>;
     }

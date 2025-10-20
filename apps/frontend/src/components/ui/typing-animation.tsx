@@ -20,6 +20,7 @@ interface TypingAnimationProps extends MotionProps {
   showCursor?: boolean;
   blinkCursor?: boolean;
   cursorStyle?: "line" | "block" | "underscore";
+  skipAnimation?: boolean;
   onComplete?: () => void;
 }
 
@@ -38,6 +39,7 @@ export function TypingAnimation({
   showCursor = true,
   blinkCursor = true,
   cursorStyle = "line",
+  skipAnimation = false,
   onComplete,
   ...props
 }: TypingAnimationProps) {
@@ -45,7 +47,14 @@ export function TypingAnimation({
     forwardMotionProps: true,
   });
 
-  const [displayedText, setDisplayedText] = useState<string>("");
+  const wordsToAnimate = useMemo(
+    () => words || (children ? [children] : []),
+    [words, children]
+  );
+
+  const [displayedText, setDisplayedText] = useState<string>(
+    skipAnimation ? wordsToAnimate[0] || "" : ""
+  );
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const [phase, setPhase] = useState<"typing" | "pause" | "deleting">("typing");
@@ -55,10 +64,6 @@ export function TypingAnimation({
     once: true,
   });
 
-  const wordsToAnimate = useMemo(
-    () => words || (children ? [children] : []),
-    [words, children]
-  );
   const hasMultipleWords = wordsToAnimate.length > 1;
 
   const typingSpeed = typeSpeed || duration;
@@ -67,7 +72,7 @@ export function TypingAnimation({
   const shouldStart = startOnView ? isInView : true;
 
   useEffect(() => {
-    if (!shouldStart || wordsToAnimate.length === 0) return;
+    if (skipAnimation || !shouldStart || wordsToAnimate.length === 0) return;
 
     const timeoutDelay =
       delay > 0 && displayedText === ""

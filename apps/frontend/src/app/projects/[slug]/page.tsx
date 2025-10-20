@@ -4,6 +4,8 @@ import { ArrowLeft, Undo2Icon } from "lucide-react";
 import { ProjectDetail } from "@/components/project-detail";
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/payload";
 import type { Metadata } from "next";
+import GradualBlur from "@/components/ui/GradualBlur";
+import AnimatedBackButton from "@/components/ui/animated-back-button";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -48,20 +50,49 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <div className="min-h-screen py-20 px-4 md:px-8">
-      {/* Back Button */}
-      <div className="max-w-4xl mx-auto mb-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 font-newsreader italic text-secondary-foreground hover:text-foreground transition-colors"
-        >
-          <Undo2Icon className="w-4 h-4" />
-          <span>Home</span>
-        </Link>
-      </div>
+    <div className="min-h-screen py-30 px-4 md:px-8">
+      <GradualBlur
+        position="top"
+        height="5rem"
+        strength={1.25}
+        zIndex={900}
+        opacity={1}
+        target="page"
+        divCount={4}
+        curve="ease-in-out"
+      />
+      <div className="relative max-w-5xl mx-auto lg:flex lg:gap-8">
+        {/* Sticky Back Button - Left Side (Desktop) */}
+        <div className="hidden lg:block flex-shrink-0">
+          <div className="sticky top-24">
+            <AnimatedBackButton>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 font-newsreader italic text-secondary-foreground hover:text-foreground transition-colors"
+              >
+                Home
+              </Link>
+            </AnimatedBackButton>
+          </div>
+        </div>
 
-      {/* Project Content */}
-      <ProjectDetail project={project} />
+        {/* Project Content - Centered */}
+        <div className="flex-1 max-w-xs md:max-w-2xl mx-auto">
+          {/* Mobile Back Button - Top */}
+          <div className="lg:hidden mb-10 ">
+            <AnimatedBackButton>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 font-newsreader italic text-secondary-foreground hover:text-foreground transition-colors"
+              >
+                Home
+              </Link>
+            </AnimatedBackButton>
+          </div>
+
+          <ProjectDetail project={project} />
+        </div>
+      </div>
     </div>
   );
 }

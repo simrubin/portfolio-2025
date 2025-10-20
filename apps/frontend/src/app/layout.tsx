@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeSwitcher } from "@/components/kibo-ui/theme-switcher";
+import { AnimationProvider } from "@/providers/animation-provider";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -43,19 +44,21 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="fixed top-4 right-4 z-[1100]">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="p-2 rounded-md hover:bg-accent transition-colors">
-                  <MoreHorizontal className="w-5 h-5" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="z-[1100]">
-                <ThemeSwitcher className="w-20" />
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          {children}
+          <AnimationProvider>
+            <div className="fixed top-4 right-4 z-[1100]">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-2 rounded-md hover:bg-accent transition-colors">
+                    <MoreHorizontal className="w-5 h-5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="z-[1100]">
+                  <ThemeSwitcher className="w-20" />
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            {children}
+          </AnimationProvider>
         </ThemeProvider>
       </body>
     </html>

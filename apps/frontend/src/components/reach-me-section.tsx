@@ -82,7 +82,7 @@ export function ReachMeSection() {
         >
           <AnimatedButton>
             <Link
-              href="https://github.com/simirubin"
+              href="https://github.com/simrubin"
               target="_blank"
               rel="noopener noreferrer"
             >

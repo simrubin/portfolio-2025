@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
 import { authenticatedOrPublished } from '../access/authenticatedOrPublished'
+import { defaultLexical } from '../fields/defaultLexical'
 
 export const Project: CollectionConfig = {
   slug: 'projects',
@@ -79,6 +80,7 @@ export const Project: CollectionConfig = {
         {
           name: 'textBody',
           type: 'richText',
+          editor: defaultLexical,
           required: true,
         },
         {
