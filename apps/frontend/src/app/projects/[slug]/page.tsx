@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { ProjectDetail } from "@/components/project-detail";
 import { ProjectTableOfContents } from "@/components/project-table-of-contents";
+import {
+  AnimatedBackButtonSection,
+  AnimatedBackButtonSectionMobile,
+} from "@/components/animated-back-button-section";
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/payload";
 import type { Metadata } from "next";
 import GradualBlur from "@/components/ui/GradualBlur";
-import AnimatedBackButton from "@/components/ui/animated-back-button";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -61,34 +63,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         divCount={4}
         curve="ease-in-out"
       />
-      <div className="relative max-w-7xl mx-auto lg:flex lg:gap-8 xl:gap-12">
+      <div className="relative max-w-6xl mx-auto lg:flex lg:gap-8 xl:gap-12">
         {/* Sticky Back Button - Left Side (Desktop) */}
         <div className="hidden lg:block flex-shrink-0">
-          <div className="sticky top-24">
-            <AnimatedBackButton>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 font-newsreader italic text-secondary-foreground hover:text-foreground transition-colors"
-              >
-                Home
-              </Link>
-            </AnimatedBackButton>
-          </div>
+          <AnimatedBackButtonSection />
         </div>
 
         {/* Project Content - Centered */}
         <div className="flex-1 max-w-xs md:max-w-2xl mx-auto">
           {/* Mobile Back Button - Top */}
-          <div className="lg:hidden mb-10 ">
-            <AnimatedBackButton>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 font-newsreader italic text-secondary-foreground hover:text-foreground transition-colors"
-              >
-                Home
-              </Link>
-            </AnimatedBackButton>
-          </div>
+          <AnimatedBackButtonSectionMobile />
 
           <ProjectDetail project={project} />
         </div>

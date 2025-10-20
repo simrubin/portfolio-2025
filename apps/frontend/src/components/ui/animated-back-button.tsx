@@ -17,7 +17,7 @@ function AnimatedBackButton({
 }: AnimatedBackButtonProps) {
   const content = (
     <>
-      <ArrowLeft className="size-4 rotate-45 transition-all ease-out group-hover:-translate-x-1 group-hover:rotate-0 text-accent-foreground group-hover:text-foreground" />
+      <ArrowLeft className="size-5 rotate-45 transition-all ease-out group-hover:-translate-x-1 group-hover:rotate-0 text-accent-foreground group-hover:text-foreground" />
       <span className="transition-colors group-hover:text-background">
         {children}
       </span>
@@ -34,7 +34,7 @@ function AnimatedBackButton({
           text-md font-semibold tracking-tight text-secondary-foreground 
           transition-colors 
           focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring 
-          [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0
+          [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0
           ${className}
         `
           .trim()
@@ -57,7 +57,7 @@ function AnimatedBackButton({
         hover:text-foreground 
         focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring 
         disabled:pointer-events-none disabled:opacity-50 
-        [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0
+        [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0
         ${className}
       `
         .trim()

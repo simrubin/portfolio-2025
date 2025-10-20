@@ -56,13 +56,13 @@ export function ProjectTableOfContents({ sections }: ProjectTOCProps) {
 
   return (
     <motion.nav
-      className="w-56"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
+      className="w-52"
+      initial={{ opacity: 0, x: 20, filter: "blur(10px)" }}
+      animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
       <div className="space-y-1">
-        <h3 className="text-sm font-newsreader italic text-secondary-foreground mb-4">
+        <h3 className="text-lg font-newsreader italic text-secondary-foreground mb-4">
           On this page
         </h3>
         <ul className="space-y-5 ">
@@ -74,7 +74,7 @@ export function ProjectTableOfContents({ sections }: ProjectTOCProps) {
               <li key={section.id || index}>
                 <button
                   onClick={() => handleClick(section.sectionTitle)}
-                  className={`block w-full text-left pl-4 text-sm transition-all duration-200 relative ${
+                  className={`block w-full text-left pl-4 text-base transition-all duration-200 relative ${
                     isActive
                       ? "text-foreground font-medium"
                       : "text-accent-foreground hover:text-foreground"
@@ -82,7 +82,7 @@ export function ProjectTableOfContents({ sections }: ProjectTOCProps) {
                 >
                   {isActive && (
                     <motion.span
-                      className="absolute -left-[3px] top-1/2 -translate-y-1/2 size-1.25 rounded-full bg-foreground"
+                      className="absolute -left-[4px] top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-foreground"
                       layoutId="activeSection"
                       transition={{
                         type: "spring",
