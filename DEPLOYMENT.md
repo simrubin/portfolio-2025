@@ -20,16 +20,15 @@ This guide explains how to deploy both the CMS and Frontend applications to Verc
 ## Quick Start Checklist
 
 - [ ] **Step 0**: Export your local project data (CRITICAL!)
-- [ ] **Step 1**: Set up Vercel Postgres database
-- [ ] **Step 2**: Create CMS Vercel project
-- [ ] **Step 3**: Connect database to CMS project
-- [ ] **Step 4**: Configure environment variables
-- [ ] **Step 5**: Add DNS record for cms.simeonrubin.com
-- [ ] **Step 6**: Deploy and create admin user
-- [ ] **Step 7**: Import your project data
-- [ ] **Step 8**: Update frontend project settings
-- [ ] **Step 9**: Deploy frontend
-- [ ] **Step 10**: Test both sites work correctly
+- [ ] **Step 1**: Create Vercel Postgres database
+- [ ] **Step 2**: Create CMS project, add env vars, and deploy once
+- [ ] **Step 3**: Connect database to deployed CMS project
+- [ ] **Step 4**: Redeploy CMS with database connected
+- [ ] **Step 5**: Create admin user (initializes database)
+- [ ] **Step 6**: Add custom domain (cms.simeonrubin.com)
+- [ ] **Step 7**: Import your 9 projects + 81 media files
+- [ ] **Step 8**: Deploy frontend to www.simeonrubin.com
+- [ ] **Step 9**: Test everything works correctly
 
 ## Step 0: Export Your Local Data ⚠️ CRITICAL
 
@@ -50,15 +49,15 @@ This creates `data-backup/` folder with:
 
 ✅ **Already done!** Your data is backed up and ready for import after deployment.
 
-## Step 1: Set Up Vercel Postgres Database
+## Step 1: Create Vercel Postgres Database First
 
 **Why?** Ensures your project data persists across deployments (SQLite resets on each deploy).
 
 ### 1.1 Create Database
 
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
-2. Click **Storage** in top menu
-3. Click **Create Database** → Select **Postgres**
+1. Go to [Vercel Dashboard → Storage](https://vercel.com/dashboard/stores)
+2. Click **Create Database**
+3. Select **Postgres** → Choose **Neon Serverless Postgres**
 4. Configure:
    - **Name**: `portfolio-cms-db`
    - **Region**: Choose closest to you (e.g., US East)
@@ -66,15 +65,15 @@ This creates `data-backup/` folder with:
 
 ⏱️ Takes ~30 seconds
 
-### 1.2 Note Your Database
+### 1.2 Save Connection Details
 
-You'll connect this to your CMS project in the next step. Keep the database dashboard open.
+After creation, you'll see the database dashboard. Keep this tab open - you'll need it in Step 3.
 
 ## Step 2: Create CMS Vercel Project
 
-### 2.1 Create New Project on Vercel
+### 2.1 Create and Deploy Project
 
-1. Go to [vercel.com](https://vercel.com) and sign in to your existing account
+1. **In a new tab**, go to [vercel.com](https://vercel.com)
 2. Click "Add New..." → "Project"
 3. Import your `portfolio-2025` GitHub repository
 4. Configure the project:
@@ -85,18 +84,39 @@ You'll connect this to your CMS project in the next step. Keep the database dash
    - **Output Directory**: Leave default (`.next`)
    - **Install Command**: Leave default (`npm install`)
 
-**Don't deploy yet!** First, connect the database.
+### 2.2 Add Initial Environment Variables (Before Deploying)
 
-## Step 3: Connect Database to CMS Project
+Before clicking Deploy, add these environment variables:
 
-### 3.1 Link Database
+```
+PAYLOAD_SECRET=<generate-a-secure-random-string>
+NEXT_PUBLIC_SERVER_URL=https://portfolio-cms.vercel.app
+```
 
-1. Go back to your **Postgres database** dashboard (Storage tab)
-2. Click **Connect Project**
-3. Select your **portfolio-cms** project
-4. Click **Connect**
+Generate secret:
 
-✅ Vercel automatically adds all Postgres environment variables (`POSTGRES_URL`, etc.) to your CMS project!
+```bash
+openssl rand -base64 32
+```
+
+**Note**: Use the temporary `.vercel.app` URL for now. We'll update it later with your custom domain.
+
+### 2.3 Deploy First Time
+
+1. Click **"Deploy"**
+2. Wait for build to complete (2-3 minutes)
+3. ⚠️ **This first deployment will fail or have issues - that's expected!** We haven't connected the database yet.
+
+## Step 3: Connect Database to Project
+
+### 3.1 Link Database to Deployed Project
+
+1. Go back to your **Postgres database** tab (from Step 1)
+2. Click **Connect Project** button
+3. Now **portfolio-cms** should appear in the dropdown! ✅
+4. Select it and click **Connect**
+
+✅ Vercel automatically adds all Postgres environment variables to your project!
 
 ### 3.2 Verify Auto-Added Variables
 
@@ -109,44 +129,37 @@ You should now see (auto-added by Vercel):
 - `POSTGRES_URL_NON_POOLING`
 - And several others...
 
-## Step 4: Configure Additional Environment Variables
+## Step 4: Redeploy with Database Connected
 
-Add these manually (the Postgres vars were auto-added in Step 3):
+Now that the database is connected, you need to redeploy so the CMS can use Postgres:
 
-```
-PAYLOAD_SECRET=<generate-a-secure-random-string>
-NEXT_PUBLIC_SERVER_URL=https://cms.simeonrubin.com
-CRON_SECRET=<optional-generate-if-needed>
-```
+### 4.1 Trigger Redeploy
 
-⚠️ **Note**: Set `NEXT_PUBLIC_SERVER_URL` to `https://cms.simeonrubin.com` (your final custom domain) even though it's not set up yet.
+1. Go to your CMS project → **Deployments** tab
+2. Click the three dots (⋯) on the latest deployment
+3. Click **"Redeploy"**
+4. Check ✅ **"Use existing Build Cache"** (faster)
+5. Click **"Redeploy"**
 
-To generate secure secrets:
+⏱️ Takes 2-3 minutes
 
-```bash
-openssl rand -base64 32
-```
+### 4.2 Verify Successful Deployment
 
-**Important**: You do NOT need to set `DATABASE_URI` - the CMS will automatically use `POSTGRES_URL` for production!
+This time, the deployment should succeed with Postgres connected!
 
-## Step 5: Deploy CMS
+✅ Your CMS is now live at: `https://portfolio-cms.vercel.app` (or your project's URL)
 
-### 5.1 Initial Deployment
+## Step 5: Initialize Database Schema
 
-1. Go back to project overview
-2. Click **"Deploy"** (or it may auto-deploy)
-3. Wait for build to complete (2-3 minutes)
-4. You'll get a temporary URL like `https://portfolio-cms.vercel.app`
+### 5.1 Create Admin User
 
-✅ **Your CMS is now live with Postgres!**
-
-### 5.2 Initialize Database Schema
-
-1. Visit your temporary URL's admin: `https://portfolio-cms.vercel.app/admin`
+1. Visit your deployment URL's admin: `https://portfolio-cms.vercel.app/admin`
 2. **Create your first admin user**
    - Email: Your email
    - Password: Secure password (save it!)
 3. Payload automatically creates all database tables on first run ✨
+
+🎉 Your CMS is now running with Postgres! Data will persist forever.
 
 ## Step 6: Add Custom Domain (cms.simeonrubin.com)
 

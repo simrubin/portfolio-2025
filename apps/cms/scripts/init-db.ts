@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 /**
  * Initialize database schema before build
@@ -6,7 +6,7 @@
  */
 
 import { getPayload } from 'payload'
-import config from '@payload-config'
+import config from '../src/payload.config'
 
 async function initDatabase() {
   console.log('🔧 Initializing database schema...')
