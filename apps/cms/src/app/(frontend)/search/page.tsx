@@ -15,9 +15,9 @@ type Args = {
 }
 export default async function Page({ searchParams: searchParamsPromise }: Args) {
   const { q: query } = await searchParamsPromise
-  
+
   let posts
-  
+
   try {
     const payload = await getPayload({ config: configPromise })
 
@@ -62,13 +62,25 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
           }
         : {}),
     })
-  } catch (error) {
-    // During build, database might not be initialized yet
-    console.warn('Could not load search results, database not ready:', error instanceof Error ? error.message : String(error))
-    posts = {
-      docs: [],
+    } catch (error) {
+      // During build, database might not be initialized yet
+      console.warn(
+        'Could not load search results, database not ready:',
+        error instanceof Error ? error.message : String(error),
+      )
+      posts = {
+        docs: [],
+        totalDocs: 0,
+        limit: 10,
+        totalPages: 0,
+        page: 1,
+        pagingCounter: 0,
+        hasPrevPage: false,
+        hasNextPage: false,
+        prevPage: null,
+        nextPage: null,
+      }
     }
-  }
 
   return (
     <div className="pt-24 pb-24">

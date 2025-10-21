@@ -11,7 +11,7 @@ const getPagesSitemap = unstable_cache(
       'https://example.com'
 
     let results
-    
+
     try {
       const payload = await getPayload({ config })
 
@@ -34,7 +34,10 @@ const getPagesSitemap = unstable_cache(
       })
     } catch (error) {
       // During build, database might not be initialized yet
-      console.warn('Could not load pages for sitemap, database not ready:', error instanceof Error ? error.message : String(error))
+      console.warn(
+        'Could not load pages for sitemap, database not ready:',
+        error instanceof Error ? error.message : String(error),
+      )
       results = { docs: [] }
     }
 
