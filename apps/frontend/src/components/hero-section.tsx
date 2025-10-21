@@ -82,8 +82,8 @@ export function HeroSection() {
           delay: hasPlayedInitialAnimation ? 0 : 1.8,
         }}
       >
-        I build experiences and products across hardware and software, guided by
-        the belief that tech should be built with craft, compassion and just the
+        I design and build experiences across hardware and software, guided by
+        the belief that tech should be built with craft, empathy and just the
         right amount of fun.{" "}
       </motion.p>
     </section>
