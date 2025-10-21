@@ -19,19 +19,36 @@ type Args = {
 
 export default async function Page({ params: paramsPromise }: Args) {
   const { pageNumber } = await paramsPromise
-  const payload = await getPayload({ config: configPromise })
-
   const sanitizedPageNumber = Number(pageNumber)
 
   if (!Number.isInteger(sanitizedPageNumber)) notFound()
 
-  const posts = await payload.find({
-    collection: 'posts',
-    depth: 1,
-    limit: 12,
-    page: sanitizedPageNumber,
-    overrideAccess: false,
-  })
+  let posts
+  
+  try {
+    const payload = await getPayload({ config: configPromise })
+
+    posts = await payload.find({
+      collection: 'posts',
+      depth: 1,
+      limit: 12,
+      page: sanitizedPageNumber,
+      overrideAccess: false,
+    })
+  } catch (error) {
+    // During build, database might not be initialized yet
+    console.warn('Could not load posts page, database not ready:', error instanceof Error ? error.message : String(error))
+    posts = {
+      docs: [],
+      page: sanitizedPageNumber,
+      totalDocs: 0,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPrevPage: false,
+      nextPage: null,
+      prevPage: null,
+    }
+  }
 
   return (
     <div className="pt-24 pb-24">

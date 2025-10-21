@@ -38,7 +38,10 @@ export async function generateStaticParams() {
     return params || []
   } catch (error) {
     // During build, database might not be initialized yet
-    console.warn('Could not generate static params, database not ready:', error instanceof Error ? error.message : String(error))
+    console.warn(
+      'Could not generate static params, database not ready:',
+      error instanceof Error ? error.message : String(error),
+    )
     return []
   }
 }
