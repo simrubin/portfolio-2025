@@ -6,7 +6,7 @@
  */
 
 import { getPayload } from 'payload'
-import config from '../src/payload.config.js'
+import config from '@payload-config'
 
 async function initDatabase() {
   console.log('🔧 Initializing database schema...')
@@ -25,4 +25,3 @@ async function initDatabase() {
 }
 
 initDatabase()
-
