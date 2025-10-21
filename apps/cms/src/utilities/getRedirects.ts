@@ -3,16 +3,25 @@ import { getPayload } from 'payload'
 import { unstable_cache } from 'next/cache'
 
 export async function getRedirects(depth = 1) {
-  const payload = await getPayload({ config: configPromise })
+  try {
+    const payload = await getPayload({ config: configPromise })
 
-  const { docs: redirects } = await payload.find({
-    collection: 'redirects',
-    depth,
-    limit: 0,
-    pagination: false,
-  })
+    const { docs: redirects } = await payload.find({
+      collection: 'redirects',
+      depth,
+      limit: 0,
+      pagination: false,
+    })
 
-  return redirects
+    return redirects
+  } catch (error) {
+    // During build, database might not be initialized yet
+    console.warn(
+      'Could not load redirects, database not ready:',
+      error instanceof Error ? error.message : String(error),
+    )
+    return []
+  }
 }
 
 /**
