@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { Inter_Tight, Newsreader } from "next/font/google";
-import { MoreHorizontal, MoreVertical } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import "./globals.css";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeSwitcher } from "@/components/kibo-ui/theme-switcher";
 import { AnimationProvider } from "@/providers/animation-provider";
+import { AboutDialog } from "@/components/about-dialog";
+import { ThemeFavicon } from "@/components/theme-favicon";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -44,16 +45,23 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <ThemeFavicon />
           <AnimationProvider>
             <div className="fixed top-4 right-4 z-[1100]">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="p-2 rounded-md hover:bg-accent transition-colors">
+                  <button className="p-2 rounded-md hover:bg-accent hover:rounded-xl transition-colors">
                     <MoreHorizontal className="w-5 h-5" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="z-[1100]">
-                  <ThemeSwitcher className="w-20" />
+                <DropdownMenuContent
+                  align="end"
+                  className="z-[1100] w-fit min-w-0 p-2 rounded-3xl"
+                >
+                  <div className="mb-2">
+                    <ThemeSwitcher className="w-fit" />
+                  </div>
+                  <AboutDialog />
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

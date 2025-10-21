@@ -69,7 +69,7 @@ export const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
             <Icon
               className={cn(
                 "relative z-10 m-auto h-4 w-4",
-                isActive ? "text-foreground" : "text-muted-foreground"
+                isActive ? "text-foreground" : "text-secondary-foreground"
               )}
             />
           </button>
