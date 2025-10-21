@@ -1,1 +1,42 @@
 node_modules
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+*.env
+
+# Data backups
+data-backup/
+data-backup-*.zip
+
+# Build outputs
+.next/
+dist/
+build/
+
+# Databases
+*.db
+*.db-shm
+*.db-wal
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+.cache/

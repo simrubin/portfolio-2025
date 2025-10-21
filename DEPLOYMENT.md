@@ -19,37 +19,101 @@ This guide explains how to deploy both the CMS and Frontend applications to Verc
 
 ## Quick Start Checklist
 
-- [ ] Step 1: Deploy CMS to new Vercel project
-- [ ] Step 1.2: Set environment variables for CMS
-- [ ] Step 1.4: Add DNS record for cms.simeonrubin.com
-- [ ] Step 1.5: Create admin user and add projects
-- [ ] Step 2: Update existing www.simeonrubin.com project settings
-- [ ] Step 2.2: Set NEXT_PUBLIC_CMS_URL environment variable
-- [ ] Step 2.3: Redeploy frontend
-- [ ] Step 3: Verify images load correctly
-- [ ] Test both sites work correctly
+- [ ] **Step 0**: Export your local project data (CRITICAL!)
+- [ ] **Step 1**: Set up Vercel Postgres database
+- [ ] **Step 2**: Create CMS Vercel project
+- [ ] **Step 3**: Connect database to CMS project
+- [ ] **Step 4**: Configure environment variables
+- [ ] **Step 5**: Add DNS record for cms.simeonrubin.com
+- [ ] **Step 6**: Deploy and create admin user
+- [ ] **Step 7**: Import your project data
+- [ ] **Step 8**: Update frontend project settings
+- [ ] **Step 9**: Deploy frontend
+- [ ] **Step 10**: Test both sites work correctly
 
-## Step 1: Deploy CMS Application
+## Step 0: Export Your Local Data ⚠️ CRITICAL
 
-### 1.1 Create New Project on Vercel
+**Before deploying, backup your project data!**
+
+You have **9 projects and 81 media files** in your local CMS. Run the export script:
+
+```bash
+# From project root
+node export-data.js
+```
+
+This creates `data-backup/` folder with:
+
+- `projects-export.json` - All your project data
+- `media-export.json` - Media metadata
+- `media-files/` - Actual image files (copied automatically)
+
+✅ **Already done!** Your data is backed up and ready for import after deployment.
+
+## Step 1: Set Up Vercel Postgres Database
+
+**Why?** Ensures your project data persists across deployments (SQLite resets on each deploy).
+
+### 1.1 Create Database
+
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+2. Click **Storage** in top menu
+3. Click **Create Database** → Select **Postgres**
+4. Configure:
+   - **Name**: `portfolio-cms-db`
+   - **Region**: Choose closest to you (e.g., US East)
+5. Click **Create**
+
+⏱️ Takes ~30 seconds
+
+### 1.2 Note Your Database
+
+You'll connect this to your CMS project in the next step. Keep the database dashboard open.
+
+## Step 2: Create CMS Vercel Project
+
+### 2.1 Create New Project on Vercel
 
 1. Go to [vercel.com](https://vercel.com) and sign in to your existing account
 2. Click "Add New..." → "Project"
 3. Import your `portfolio-2025` GitHub repository
 4. Configure the project:
-   - **Project Name**: `simeonrubin-cms` (or your preferred name)
+   - **Project Name**: `portfolio-cms` (or your preferred name)
    - **Framework Preset**: Next.js
    - **Root Directory**: `apps/cms` ⚠️ **IMPORTANT**
    - **Build Command**: Leave default (`npm run build`)
    - **Output Directory**: Leave default (`.next`)
    - **Install Command**: Leave default (`npm install`)
 
-### 1.2 Configure Environment Variables
+**Don't deploy yet!** First, connect the database.
 
-Add these environment variables in the Vercel dashboard (Project → Settings → Environment Variables):
+## Step 3: Connect Database to CMS Project
+
+### 3.1 Link Database
+
+1. Go back to your **Postgres database** dashboard (Storage tab)
+2. Click **Connect Project**
+3. Select your **portfolio-cms** project
+4. Click **Connect**
+
+✅ Vercel automatically adds all Postgres environment variables (`POSTGRES_URL`, etc.) to your CMS project!
+
+### 3.2 Verify Auto-Added Variables
+
+Go to your CMS project → Settings → Environment Variables
+
+You should now see (auto-added by Vercel):
+
+- `POSTGRES_URL`
+- `POSTGRES_PRISMA_URL`
+- `POSTGRES_URL_NON_POOLING`
+- And several others...
+
+## Step 4: Configure Additional Environment Variables
+
+Add these manually (the Postgres vars were auto-added in Step 3):
 
 ```
-DATABASE_URI=file:./cms.db
 PAYLOAD_SECRET=<generate-a-secure-random-string>
 NEXT_PUBLIC_SERVER_URL=https://cms.simeonrubin.com
 CRON_SECRET=<optional-generate-if-needed>
@@ -63,31 +127,88 @@ To generate secure secrets:
 openssl rand -base64 32
 ```
 
-### 1.3 Deploy
+**Important**: You do NOT need to set `DATABASE_URI` - the CMS will automatically use `POSTGRES_URL` for production!
 
-1. Click "Deploy"
-2. Wait for the build to complete
-3. You'll get a temporary URL like `https://simeonrubin-cms.vercel.app`
+## Step 5: Deploy CMS
 
-### 1.4 Add Custom Domain (cms.simeonrubin.com)
+### 5.1 Initial Deployment
+
+1. Go back to project overview
+2. Click **"Deploy"** (or it may auto-deploy)
+3. Wait for build to complete (2-3 minutes)
+4. You'll get a temporary URL like `https://portfolio-cms.vercel.app`
+
+✅ **Your CMS is now live with Postgres!**
+
+### 5.2 Initialize Database Schema
+
+1. Visit your temporary URL's admin: `https://portfolio-cms.vercel.app/admin`
+2. **Create your first admin user**
+   - Email: Your email
+   - Password: Secure password (save it!)
+3. Payload automatically creates all database tables on first run ✨
+
+## Step 6: Add Custom Domain (cms.simeonrubin.com)
+
+### 6.1 Configure Domain
 
 1. In your CMS project dashboard → Settings → Domains
-2. Click "Add Domain"
+2. Click **"Add Domain"**
 3. Enter: `cms.simeonrubin.com`
 4. Vercel will provide DNS instructions:
    - **Type**: CNAME
    - **Name**: `cms`
    - **Value**: `cname.vercel-dns.com`
-5. Add this CNAME record to your domain registrar (where simeonrubin.com is managed)
-6. Wait for DNS propagation (usually 5-60 minutes)
 
-### 1.5 Access Admin Panel
+### 6.2 Update DNS
 
-- Visit: `https://cms.simeonrubin.com/admin`
-- Create your first admin user
-- Start adding projects!
+1. Go to your domain registrar (where you manage simeonrubin.com)
+2. Add the CNAME record
+3. Wait for DNS propagation (5-60 minutes)
+4. Vercel will automatically detect when it's ready
 
-## Step 2: Deploy Frontend Application (Replace Existing www.simeonrubin.com)
+✅ Your CMS admin panel: `https://cms.simeonrubin.com/admin`
+
+## Step 7: Import Your Project Data
+
+**Now restore your 9 projects and 81 media files!**
+
+### 7.1 Upload Media Files
+
+1. Go to `https://cms.simeonrubin.com/admin`
+2. Navigate to **Media** collection
+3. Bulk upload images from `data-backup/media-files/` folder
+   - You can select multiple files at once
+   - Upload the ones referenced in your projects first
+
+⏱️ This may take 5-10 minutes depending on file sizes
+
+### 7.2 Run Import Script
+
+```bash
+# From your project root
+node import-data.js
+```
+
+Follow the prompts:
+
+- **CMS URL**: `https://cms.simeonrubin.com`
+- **Admin email**: (the one you created in Step 5.2)
+- **Admin password**: (your password)
+
+The script will:
+
+- ✅ Import all 9 projects
+- ✅ Preserve project structure
+- ⚠️ You'll need to manually relink images (script will guide you)
+
+### 7.3 Verify Projects
+
+1. Visit: `https://cms.simeonrubin.com/api/projects`
+2. You should see your projects as JSON!
+3. Check admin panel to verify all projects imported correctly
+
+## Step 8: Deploy Frontend Application (Replace Existing www.simeonrubin.com)
 
 You have two options: update your existing project or create a new one.
 
@@ -112,14 +233,14 @@ You have two options: update your existing project or create a new one.
    - Click "Add New..." → "Project"
    - Import `portfolio-2025` repository
    - Configure:
-     - **Project Name**: `simeonrubin-portfolio`
+     - **Project Name**: `portfolio-frontend`
      - **Framework Preset**: Next.js
      - **Root Directory**: `apps/frontend` ⚠️ **IMPORTANT**
      - **Build Command**: Leave default (`npm run build`)
      - **Output Directory**: Leave default (`.next`)
      - **Install Command**: Leave default (`npm install`)
 
-### 2.2 Configure Environment Variables
+### 8.2 Configure Environment Variables
 
 Go to Project → Settings → Environment Variables and add:
 
@@ -129,13 +250,13 @@ NEXT_PUBLIC_CMS_URL=https://cms.simeonrubin.com
 
 ⚠️ **Important**: Use `https://cms.simeonrubin.com` (not the temporary Vercel URL)
 
-### 2.3 Deploy
+### 8.3 Deploy
 
-1. If using Option A: Go to Deployments → Click "Redeploy" on latest deployment
-2. If using Option B: Click "Deploy"
-3. Wait for the build to complete
+1. If using Option A: Go to Deployments → Click **"Redeploy"** on latest deployment
+2. If using Option B: Click **"Deploy"**
+3. Wait for the build to complete (2-3 minutes)
 
-### 2.4 Verify Domain (If using Option B)
+### 8.4 Verify Domain (If using Option B)
 
 1. Go to Settings → Domains
 2. Click "Add Domain"
@@ -143,44 +264,118 @@ NEXT_PUBLIC_CMS_URL=https://cms.simeonrubin.com
 4. If you removed it from the old project, it should be available immediately
 5. Vercel will automatically configure both domains
 
-## Step 3: Verify Configuration
+## Step 9: Verify Everything Works! 🎉
 
-✅ The `apps/frontend/next.config.ts` is already configured to allow images from `cms.simeonrubin.com`.
+### 9.1 Test CMS Admin
 
-Make sure to push all your changes to GitHub before deploying:
+1. Go to `https://cms.simeonrubin.com/admin`
+2. Log in with your admin credentials
+3. Check that all 9 projects are visible
+4. Try editing a project
+5. Upload a new test image
+
+### 9.2 Test CMS API
+
+1. Visit: `https://cms.simeonrubin.com/api/projects`
+2. Should return JSON with all your projects
+3. Check that images have proper URLs
+
+### 9.3 Test Frontend
+
+1. Visit: `https://www.simeonrubin.com`
+2. **All your projects should be visible!** 🎊
+3. Click on a project to see details
+4. Verify images load correctly
+5. Test theme switching
+6. Test responsive design on mobile
+
+### 9.4 Test Data Persistence
+
+1. Add a new project in CMS admin
+2. Publish it
+3. Wait 60 seconds (ISR revalidation)
+4. Refresh www.simeonrubin.com
+5. New project should appear! ✨
+
+### 9.5 Troubleshooting
+
+**If projects don't show on frontend:**
+
+- Check CMS API returns data: `https://cms.simeonrubin.com/api/projects`
+- Verify `NEXT_PUBLIC_CMS_URL` is set correctly in frontend
+- Check browser console for errors
+- Wait 60 seconds for ISR to revalidate
+
+**If images don't load:**
+
+- Verify images uploaded to CMS media collection
+- Check `next.config.ts` includes `cms.simeonrubin.com` in remote patterns
+- Inspect image URLs in browser network tab
+
+## Step 10: Cleanup & Next Steps
+
+### 10.1 Secure Your Backups
+
+```bash
+# Your data is now in Postgres - you can archive the backup
+cd /Users/simeonrubin/Desktop/Coding/portfolio-2025
+zip -r data-backup-$(date +%Y%m%d).zip data-backup/
+# Store this ZIP somewhere safe (external drive, cloud storage)
+```
+
+### 10.2 Optional: Remove Local Backup
+
+After confirming everything works in production:
+
+```bash
+# Optional - only after verifying production works!
+rm -rf data-backup/
+```
+
+### 10.3 Future Updates
+
+For continuous deployment:
 
 ```bash
 git add .
-git commit -m "Configure for simeonrubin.com deployment"
+git commit -m "Your changes"
 git push origin main
 ```
 
-This will trigger automatic deployments on both Vercel projects (if configured for continuous deployment).
+Both projects will auto-deploy! ✨
 
-## Important Notes on SQLite + Vercel
+## Database Architecture
 
-⚠️ **Vercel's filesystem is ephemeral** - this means:
+### Production (Vercel Postgres) ✅
 
-- Files written during runtime are lost on new deployments
-- SQLite database resets on each deployment
-- **Solution**: Use Payload's database migrations or seed script to initialize data
+Your deployed CMS uses **Vercel Postgres** for persistent data storage:
 
-### Recommended Approach:
+- ✅ **Data persists** across deployments
+- ✅ **Free tier**: 256 MB storage (plenty for portfolios)
+- ✅ **Automatic backups** (available in Vercel dashboard)
+- ✅ **Zero config**: Works out of the box
 
-1. **Local Development**: Add all projects and content locally
-2. **Export Data**: Use Payload's API to export your data
-3. **Seed on Deploy**: Create a seed script that runs on deployment
+### Local Development (SQLite)
 
-### Alternative (Production-Ready):
+Your local CMS continues to use **SQLite** for fast development:
 
-For a production site with persistent data, consider:
+- ⚡ **Fast**: No network latency
+- 🔄 **Easy**: File-based, no setup needed
+- 🧪 **Safe**: Changes don't affect production
 
-- **Payload Cloud** (paid but optimized for Payload)
-- **Vercel Postgres** (has free tier)
-- **PlanetScale** (MySQL, has free tier)
-- **Supabase** (PostgreSQL, has free tier)
+### How It Works
 
-Update `apps/cms/src/payload.config.ts` to use the appropriate adapter.
+The CMS config automatically detects the environment:
+
+```typescript
+// Production: POSTGRES_URL is set by Vercel → Uses Postgres
+// Local: No POSTGRES_URL → Uses SQLite (file:./cms.db)
+const databaseAdapter = process.env.POSTGRES_URL
+  ? vercelPostgresAdapter({ ... })
+  : sqliteAdapter({ ... })
+```
+
+This is already configured in `apps/cms/src/payload.config.ts`!
 
 ## ISR (Incremental Static Regeneration)
 

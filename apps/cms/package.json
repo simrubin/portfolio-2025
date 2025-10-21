@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@payloadcms/admin-bar": "3.59.1",
+    "@payloadcms/db-sqlite": "3.59.1",
+    "@payloadcms/db-vercel-postgres": "^3.59.1",
     "@payloadcms/live-preview-react": "3.59.1",
     "@payloadcms/next": "3.59.1",
     "@payloadcms/payload-cloud": "3.59.1",
@@ -53,8 +55,7 @@
     "react-hook-form": "^7.54.0",
     "sharp": "0.34.2",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7",
-    "@payloadcms/db-sqlite": "3.59.1"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

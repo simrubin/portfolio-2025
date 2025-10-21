@@ -1,5 +1,6 @@
 // storage-adapter-import-placeholder
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -20,6 +21,19 @@ import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Database configuration - uses Postgres in production, SQLite for local development
+const databaseAdapter = process.env.POSTGRES_URL
+  ? vercelPostgresAdapter({
+      pool: {
+        connectionString: process.env.POSTGRES_URL,
+      },
+    })
+  : sqliteAdapter({
+      client: {
+        url: process.env.DATABASE_URI || 'file:./cms.db',
+      },
+    })
 
 export default buildConfig({
   admin: {
@@ -60,11 +74,7 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URI || '',
-    },
-  }),
+  db: databaseAdapter,
   collections: [Pages, Posts, Media, Categories, Users, Project],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
