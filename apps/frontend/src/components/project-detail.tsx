@@ -212,7 +212,7 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
             href={node.fields?.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:font-semibold hover:decoration-foreground transition-all"
+            className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:decoration-foreground transition-all"
           >
             {children}
           </a>

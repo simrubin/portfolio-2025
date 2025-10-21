@@ -36,17 +36,17 @@ const nextConfig: NextConfig = {
         hostname: "*.vercel.app",
         pathname: "/api/media/**",
       },
-      // Add your custom domain here after deployment
-      // {
-      //   protocol: "https",
-      //   hostname: "cms.yourdomain.com",
-      //   pathname: "/media/**",
-      // },
-      // {
-      //   protocol: "https",
-      //   hostname: "cms.yourdomain.com",
-      //   pathname: "/api/media/**",
-      // },
+      // Production - custom domain
+      {
+        protocol: "https",
+        hostname: "cms.simeonrubin.com",
+        pathname: "/media/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cms.simeonrubin.com",
+        pathname: "/api/media/**",
+      },
     ],
   },
 };
