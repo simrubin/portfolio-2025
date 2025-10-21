@@ -88,7 +88,10 @@ export async function generateStaticParams() {
     return pages
   } catch (error) {
     // During build, database might not be initialized yet
-    console.warn('Could not generate static params for post pages, database not ready:', error.message)
+    console.warn(
+      'Could not generate static params for post pages, database not ready:',
+      error instanceof Error ? error.message : String(error),
+    )
     return [{ pageNumber: '1' }] // Return at least page 1
   }
 }
