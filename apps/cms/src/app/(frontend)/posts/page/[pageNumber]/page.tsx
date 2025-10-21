@@ -24,7 +24,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   if (!Number.isInteger(sanitizedPageNumber)) notFound()
 
   let posts
-  
+
   try {
     const payload = await getPayload({ config: configPromise })
 
@@ -37,7 +37,10 @@ export default async function Page({ params: paramsPromise }: Args) {
     })
   } catch (error) {
     // During build, database might not be initialized yet
-    console.warn('Could not load posts page, database not ready:', error instanceof Error ? error.message : String(error))
+    console.warn(
+      'Could not load posts page, database not ready:',
+      error instanceof Error ? error.message : String(error),
+    )
     posts = {
       docs: [],
       page: sanitizedPageNumber,

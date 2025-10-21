@@ -13,7 +13,7 @@ export const revalidate = 600
 
 export default async function Page() {
   let posts
-  
+
   try {
     const payload = await getPayload({ config: configPromise })
 
@@ -31,7 +31,10 @@ export default async function Page() {
     })
   } catch (error) {
     // During build, database might not be initialized yet
-    console.warn('Could not load posts, database not ready:', error instanceof Error ? error.message : String(error))
+    console.warn(
+      'Could not load posts, database not ready:',
+      error instanceof Error ? error.message : String(error),
+    )
     posts = {
       docs: [],
       page: 1,
