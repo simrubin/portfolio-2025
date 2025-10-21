@@ -328,25 +328,26 @@ export async function GET() {
 
   try {
     console.log('🔧 Running UUID-based database migration...')
-    
+
     const client = await pool.connect()
-    
+
     try {
       // Run the migration SQL
       await client.query(createTablesSQL)
       console.log('✅ Database migration completed successfully')
-      
+
       // Check if users exist
       const result = await client.query('SELECT COUNT(*) FROM users')
       const userCount = parseInt(result.rows[0].count)
-      
+
       return NextResponse.json({
         success: true,
         message: 'Database migration completed successfully with UUID support',
         userCount,
-        nextStep: userCount === 0 
-          ? 'Go to /admin to create your first user'
-          : 'Database is ready, go to /admin to log in'
+        nextStep:
+          userCount === 0
+            ? 'Go to /admin to create your first user'
+            : 'Database is ready, go to /admin to log in',
       })
     } finally {
       client.release()
