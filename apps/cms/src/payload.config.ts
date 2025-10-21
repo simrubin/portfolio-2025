@@ -28,6 +28,8 @@ const databaseAdapter = process.env.POSTGRES_URL
       pool: {
         connectionString: process.env.POSTGRES_URL,
       },
+      push: false, // Don't auto-push schema changes
+      idType: 'uuid', // Use UUIDs for IDs
     })
   : sqliteAdapter({
       client: {

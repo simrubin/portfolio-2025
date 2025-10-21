@@ -50,18 +50,18 @@ export async function GET() {
 
   try {
     console.log('🔧 Setting up minimal Payload schema for user creation...')
-    
+
     const client = await pool.connect()
-    
+
     try {
       // Clear database
       await client.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;')
       console.log('✅ Database cleared')
-      
+
       // Create minimal schema for users only
       await client.query(minimalSchema)
       console.log('✅ Minimal schema created')
-      
+
       // Verify users table exists
       const result = await client.query(`
         SELECT column_name, data_type 
@@ -69,14 +69,15 @@ export async function GET() {
         WHERE table_name = 'users' AND table_schema = 'public'
         ORDER BY ordinal_position
       `)
-      
+
       console.log('📋 Users table columns:', result.rows)
-      
+
       return NextResponse.json({
         success: true,
         message: 'Minimal schema created - users table ready',
         columns: result.rows,
-        nextStep: 'Go to /admin to create your first user. Other tables will be created automatically as needed.'
+        nextStep:
+          'Go to /admin to create your first user. Other tables will be created automatically as needed.',
       })
     } finally {
       client.release()
