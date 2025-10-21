@@ -18,33 +18,36 @@ async function getGlobal(slug: Global, depth = 0) {
     return global
   } catch (error) {
     // During build, database might not be initialized yet
-    console.warn(`Could not load global "${slug}", database not ready:`, error instanceof Error ? error.message : String(error))
-    
+    console.warn(
+      `Could not load global "${slug}", database not ready:`,
+      error instanceof Error ? error.message : String(error),
+    )
+
     // Return empty global structure based on slug
     if (slug === 'header') {
       return {
-        id: 'temp-header',
+        id: 0,
         navItems: [],
         updatedAt: new Date().toISOString(),
         createdAt: new Date().toISOString(),
-      }
+      } as any
     }
-    
+
     if (slug === 'footer') {
       return {
-        id: 'temp-footer',
+        id: 0,
         navItems: [],
         updatedAt: new Date().toISOString(),
         createdAt: new Date().toISOString(),
-      }
+      } as any
     }
-    
+
     // Generic fallback
     return {
-      id: `temp-${slug}`,
+      id: 0,
       updatedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
-    }
+    } as any
   }
 }
 
