@@ -83,31 +83,62 @@ CREATE TABLE "payload_migrations" (
 CREATE TABLE "projects" (
   "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   "title" VARCHAR NOT NULL,
-  "slug" VARCHAR,
+  "slug" VARCHAR UNIQUE,
   "hero_image_id" UUID,
-  "tagline" VARCHAR,
-  "description" TEXT,
-  "tech_stack" JSONB,
-  "github_url" VARCHAR,
-  "live_url" VARCHAR,
   "published_at" TIMESTAMP(3) WITHOUT TIME ZONE,
+  "year" NUMERIC,
+  "newly_added" BOOLEAN DEFAULT false,
   "updated_at" TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "created_at" TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "_status" VARCHAR DEFAULT 'draft'
+);
+
+CREATE TABLE "projects_versions" (
+  "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "parent_id" UUID REFERENCES "projects"("id") ON DELETE CASCADE,
+  "version_title" VARCHAR,
+  "version_slug" VARCHAR,
+  "version_hero_image_id" UUID,
+  "version_published_at" TIMESTAMP(3) WITHOUT TIME ZONE,
+  "version_year" NUMERIC,
+  "version_newly_added" BOOLEAN,
+  "version__status" VARCHAR,
+  "version_updated_at" TIMESTAMP(3) WITHOUT TIME ZONE,
+  "version_created_at" TIMESTAMP(3) WITHOUT TIME ZONE,
+  "created_at" TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "updated_at" TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "latest" BOOLEAN,
+  "autosave" BOOLEAN
 );
 
 CREATE TABLE "projects_sections" (
   "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   "_order" INTEGER NOT NULL,
   "_parent_id" UUID NOT NULL REFERENCES "projects"("id") ON DELETE CASCADE,
-  "title" VARCHAR,
-  "content" TEXT
+  "section_title" VARCHAR,
+  "text_body" JSONB
 );
 
 CREATE TABLE "projects_sections_media" (
   "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   "_order" INTEGER NOT NULL,
   "_parent_id" UUID NOT NULL REFERENCES "projects_sections"("id") ON DELETE CASCADE,
+  "media_item_id" UUID,
+  "caption" VARCHAR
+);
+
+CREATE TABLE "projects_versions_sections" (
+  "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "_order" INTEGER NOT NULL,
+  "_parent_id" UUID NOT NULL REFERENCES "projects_versions"("id") ON DELETE CASCADE,
+  "section_title" VARCHAR,
+  "text_body" JSONB
+);
+
+CREATE TABLE "projects_versions_sections_media" (
+  "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "_order" INTEGER NOT NULL,
+  "_parent_id" UUID NOT NULL REFERENCES "projects_versions_sections"("id") ON DELETE CASCADE,
   "media_item_id" UUID,
   "caption" VARCHAR
 );
@@ -198,10 +229,16 @@ CREATE INDEX "payload_locked_documents_rels_path_idx" ON "payload_locked_documen
 CREATE INDEX "projects_slug_idx" ON "projects" ("slug");
 CREATE INDEX "projects_created_at_idx" ON "projects" ("created_at");
 CREATE INDEX "projects_status_idx" ON "projects" ("_status");
+CREATE INDEX "projects_versions_parent_idx" ON "projects_versions" ("parent_id");
+CREATE INDEX "projects_versions_latest_idx" ON "projects_versions" ("latest");
 CREATE INDEX "projects_sections_order_idx" ON "projects_sections" ("_order");
 CREATE INDEX "projects_sections_parent_idx" ON "projects_sections" ("_parent_id");
 CREATE INDEX "projects_sections_media_order_idx" ON "projects_sections_media" ("_order");
 CREATE INDEX "projects_sections_media_parent_idx" ON "projects_sections_media" ("_parent_id");
+CREATE INDEX "projects_versions_sections_order_idx" ON "projects_versions_sections" ("_order");
+CREATE INDEX "projects_versions_sections_parent_idx" ON "projects_versions_sections" ("_parent_id");
+CREATE INDEX "projects_versions_sections_media_order_idx" ON "projects_versions_sections_media" ("_order");
+CREATE INDEX "projects_versions_sections_media_parent_idx" ON "projects_versions_sections_media" ("_parent_id");
 CREATE INDEX "media_created_at_idx" ON "media" ("created_at");
 CREATE INDEX "pages_slug_idx" ON "pages" ("slug");
 CREATE INDEX "pages_created_at_idx" ON "pages" ("created_at");
