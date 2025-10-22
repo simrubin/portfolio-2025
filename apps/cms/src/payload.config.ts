@@ -28,7 +28,7 @@ const databaseAdapter = process.env.POSTGRES_URL
       pool: {
         connectionString: process.env.POSTGRES_URL,
       },
-      push: false, // Don't auto-push schema changes
+      push: true, // Auto-create schema on first run
       idType: 'uuid', // Use UUIDs for IDs
     })
   : sqliteAdapter({
