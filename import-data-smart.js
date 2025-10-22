@@ -1,20 +1,22 @@
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
-const FormData = require('form-data');
-const fetch = require('node-fetch');
+const fs = require("fs");
+const path = require("path");
+const readline = require("readline");
+const FormData = require("form-data");
+
+let fetch;
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-const question = (query) => new Promise((resolve) => rl.question(query, resolve));
+const question = (query) =>
+  new Promise((resolve) => rl.question(query, resolve));
 
 async function login(cmsUrl, email, password) {
   const response = await fetch(`${cmsUrl}/api/users/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
 
@@ -28,13 +30,13 @@ async function login(cmsUrl, email, password) {
 
 async function uploadMedia(cmsUrl, token, filePath, alt) {
   const form = new FormData();
-  form.append('file', fs.createReadStream(filePath));
-  if (alt) form.append('alt', alt);
+  form.append("file", fs.createReadStream(filePath));
+  if (alt) form.append("alt", alt);
 
   const response = await fetch(`${cmsUrl}/api/media`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Authorization': `JWT ${token}`,
+      Authorization: `JWT ${token}`,
     },
     body: form,
   });
@@ -49,10 +51,10 @@ async function uploadMedia(cmsUrl, token, filePath, alt) {
 
 async function createProject(cmsUrl, token, projectData) {
   const response = await fetch(`${cmsUrl}/api/projects`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `JWT ${token}`,
+      "Content-Type": "application/json",
+      Authorization: `JWT ${token}`,
     },
     body: JSON.stringify(projectData),
   });
@@ -66,56 +68,85 @@ async function createProject(cmsUrl, token, projectData) {
 }
 
 async function importData() {
-  console.log('🚀 Smart Payload CMS Data Import Tool\n');
+  console.log("🚀 Smart Payload CMS Data Import Tool\n");
 
   try {
-    const cmsUrl = await question('Enter your CMS URL (e.g., https://portfolio-cms-fawn-one.vercel.app): ');
-    const email = await question('Enter your admin email: ');
-    const password = await question('Enter your admin password: ');
+    // Dynamically import fetch
+    const nodeFetch = await import("node-fetch");
+    fetch = nodeFetch.default;
 
-    console.log('🔐 Logging in...');
+    const cmsUrl = await question(
+      "Enter your CMS URL (e.g., https://portfolio-cms-fawn-one.vercel.app): "
+    );
+    const email = await question("Enter your admin email: ");
+    const password = await question("Enter your admin password: ");
+
+    console.log("🔐 Logging in...");
     const token = await login(cmsUrl.trim(), email.trim(), password.trim());
-    console.log('✅ Logged in successfully!\n');
+    console.log("✅ Logged in successfully!\n");
 
     // Read exported data
-    const mediaDataPath = path.join(process.cwd(), 'data-backup', 'media.json');
-    const projectsDataPath = path.join(process.cwd(), 'data-backup', 'projects.json');
-    const mediaFilesDir = path.join(process.cwd(), 'data-backup', 'media-files');
+    const mediaDataPath = path.join(process.cwd(), "data-backup", "media.json");
+    const projectsDataPath = path.join(
+      process.cwd(),
+      "data-backup",
+      "projects.json"
+    );
+    const mediaFilesDir = path.join(
+      process.cwd(),
+      "data-backup",
+      "media-files"
+    );
 
     if (!fs.existsSync(mediaDataPath) || !fs.existsSync(projectsDataPath)) {
-      throw new Error('Export data not found. Please run export-data.js first.');
+      throw new Error(
+        "Export data not found. Please run export-data.js first."
+      );
     }
 
-    const mediaData = JSON.parse(fs.readFileSync(mediaDataPath, 'utf8'));
-    const projectsData = JSON.parse(fs.readFileSync(projectsDataPath, 'utf8'));
+    const mediaData = JSON.parse(fs.readFileSync(mediaDataPath, "utf8"));
+    const projectsData = JSON.parse(fs.readFileSync(projectsDataPath, "utf8"));
 
-    console.log(`Found ${mediaData.length} media files and ${projectsData.length} projects\n`);
+    console.log(
+      `Found ${mediaData.length} media files and ${projectsData.length} projects\n`
+    );
 
     // Step 1: Upload media and create ID mapping
-    console.log('📤 Step 1: Uploading media files...');
+    console.log("📤 Step 1: Uploading media files...");
     const idMap = {}; // Maps old IDs to new UUIDs
 
     for (const media of mediaData) {
       const mediaFilePath = path.join(mediaFilesDir, media.filename);
-      
+
       if (!fs.existsSync(mediaFilePath)) {
         console.log(`   ⚠️  Skipping ${media.filename} - file not found`);
         continue;
       }
 
       try {
-        const result = await uploadMedia(cmsUrl.trim(), token, mediaFilePath, media.alt);
+        const result = await uploadMedia(
+          cmsUrl.trim(),
+          token,
+          mediaFilePath,
+          media.alt
+        );
         idMap[media.id] = result.doc.id; // Map old ID to new UUID
-        console.log(`   ✅ Uploaded: ${media.filename} (${media.id} → ${result.doc.id})`);
+        console.log(
+          `   ✅ Uploaded: ${media.filename} (${media.id} → ${result.doc.id})`
+        );
       } catch (error) {
-        console.log(`   ❌ Failed to upload ${media.filename}: ${error.message}`);
+        console.log(
+          `   ❌ Failed to upload ${media.filename}: ${error.message}`
+        );
       }
     }
 
-    console.log(`\n✅ Media upload complete! Mapped ${Object.keys(idMap).length} IDs\n`);
+    console.log(
+      `\n✅ Media upload complete! Mapped ${Object.keys(idMap).length} IDs\n`
+    );
 
     // Step 2: Import projects with mapped IDs
-    console.log('📦 Step 2: Importing projects...');
+    console.log("📦 Step 2: Importing projects...");
 
     for (const project of projectsData) {
       try {
@@ -127,20 +158,26 @@ async function importData() {
           publishedAt: project.publishedAt,
           year: project.year,
           newlyAdded: project.newlyAdded || false,
-          sections: project.sections?.map(section => ({
-            sectionTitle: section.sectionTitle,
-            textBody: section.textBody,
-            media: section.media?.map(m => ({
-              mediaItem: idMap[m.mediaItem] || null,
-              caption: m.caption || '',
-            })).filter(m => m.mediaItem !== null) || [],
-          })) || [],
-          _status: 'published',
+          sections:
+            project.sections?.map((section) => ({
+              sectionTitle: section.sectionTitle,
+              textBody: section.textBody,
+              media:
+                section.media
+                  ?.map((m) => ({
+                    mediaItem: idMap[m.mediaItem] || null,
+                    caption: m.caption || "",
+                  }))
+                  .filter((m) => m.mediaItem !== null) || [],
+            })) || [],
+          _status: "published",
         };
 
         // Remove null hero image if it doesn't exist
         if (!mappedProject.heroImage) {
-          console.log(`   ⚠️  ${project.title}: Hero image not found, skipping...`);
+          console.log(
+            `   ⚠️  ${project.title}: Hero image not found, skipping...`
+          );
           continue;
         }
 
@@ -151,11 +188,10 @@ async function importData() {
       }
     }
 
-    console.log('\n✅ Import complete!');
-    console.log('\n🎉 All done! Check your CMS admin panel.');
-
+    console.log("\n✅ Import complete!");
+    console.log("\n🎉 All done! Check your CMS admin panel.");
   } catch (error) {
-    console.error('\n❌ Error:', error.message);
+    console.error("\n❌ Error:", error.message);
   } finally {
     rl.close();
   }
