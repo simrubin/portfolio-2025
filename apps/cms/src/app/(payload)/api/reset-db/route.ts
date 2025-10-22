@@ -19,12 +19,10 @@ export async function GET() {
     const client = await pool.connect()
 
     try {
-      // Drop all tables and recreate the schema
+      // Drop all tables and recreate the schema (Neon-compatible)
       await client.query(`
         DROP SCHEMA public CASCADE;
         CREATE SCHEMA public;
-        GRANT ALL ON SCHEMA public TO postgres;
-        GRANT ALL ON SCHEMA public TO public;
         CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
       `)
 
@@ -56,4 +54,3 @@ export async function GET() {
     await pool.end()
   }
 }
-
