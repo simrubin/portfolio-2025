@@ -86,11 +86,11 @@ async function importData() {
     console.log("✅ Logged in successfully!\n");
 
     // Read exported data
-    const mediaDataPath = path.join(process.cwd(), "data-backup", "media.json");
+    const mediaDataPath = path.join(process.cwd(), "data-backup", "media-export.json");
     const projectsDataPath = path.join(
       process.cwd(),
       "data-backup",
-      "projects.json"
+      "projects-export.json"
     );
     const mediaFilesDir = path.join(
       process.cwd(),
@@ -107,15 +107,19 @@ async function importData() {
     const mediaData = JSON.parse(fs.readFileSync(mediaDataPath, "utf8"));
     const projectsData = JSON.parse(fs.readFileSync(projectsDataPath, "utf8"));
 
+    // Extract docs array if it exists
+    const mediaList = mediaData.docs || mediaData;
+    const projectsList = projectsData.docs || projectsData;
+
     console.log(
-      `Found ${mediaData.length} media files and ${projectsData.length} projects\n`
+      `Found ${mediaList.length} media files and ${projectsList.length} projects\n`
     );
 
     // Step 1: Upload media and create ID mapping
     console.log("📤 Step 1: Uploading media files...");
     const idMap = {}; // Maps old IDs to new UUIDs
 
-    for (const media of mediaData) {
+    for (const media of mediaList) {
       const mediaFilePath = path.join(mediaFilesDir, media.filename);
 
       if (!fs.existsSync(mediaFilePath)) {
@@ -148,7 +152,7 @@ async function importData() {
     // Step 2: Import projects with mapped IDs
     console.log("📦 Step 2: Importing projects...");
 
-    for (const project of projectsData) {
+    for (const project of projectsList) {
       try {
         // Map the hero image ID
         const mappedProject = {
