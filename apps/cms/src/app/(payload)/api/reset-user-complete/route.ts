@@ -4,23 +4,23 @@ import config from '@/payload.config'
 import bcrypt from 'bcryptjs'
 
 export async function GET() {
-  return await resetPassword()
+  return await resetUserComplete()
 }
 
 export async function POST() {
-  return await resetPassword()
+  return await resetUserComplete()
 }
 
-async function resetPassword() {
+async function resetUserComplete() {
   try {
     const payload = await getPayload({ config })
-
-    console.log('🔄 Resetting password for simrubin13@gmail.com...')
-
+    
+    console.log('🔄 Performing complete user reset...')
+    
     // Hash the new password
     const newPassword = 'admin123'
     const hashedPassword = await bcrypt.hash(newPassword, 10)
-
+    
     // Find the user by email
     const users = await payload.find({
       collection: 'users',
@@ -30,44 +30,56 @@ async function resetPassword() {
         },
       },
     })
-
+    
     if (users.docs.length === 0) {
-      console.log('❌ User not found. Available users:')
-      const allUsers = await payload.find({
+      console.log('❌ User not found. Creating new user...')
+      
+      // Create a new user
+      const newUser = await payload.create({
         collection: 'users',
-        limit: 10,
+        data: {
+          email: 'simrubin13@gmail.com',
+          password: hashedPassword,
+          name: 'Admin User',
+        },
       })
-      allUsers.docs.forEach((user) => {
-        console.log(`  - ID: ${user.id}, Email: ${user.email}`)
-      })
-
+      
+      console.log('✅ New user created successfully!')
+      
       return NextResponse.json({
-        success: false,
-        message: 'User not found',
-        availableUsers: allUsers.docs.map((u) => ({ id: u.id, email: u.email })),
+        success: true,
+        message: 'New user created successfully',
+        email: 'simrubin13@gmail.com',
+        password: 'admin123',
+        userId: newUser.id,
       })
     }
-
-    // Update the user password
+    
+    // Update the existing user - reset password and unlock
     const user = users.docs[0]
     await payload.update({
       collection: 'users',
       id: user.id,
       data: {
         password: hashedPassword,
+        // Reset any lock fields
+        loginAttempts: 0,
+        lockUntil: null,
       },
     })
-
-    console.log('✅ Password reset successfully!')
-
+    
+    console.log('✅ User reset successfully!')
+    
     return NextResponse.json({
       success: true,
-      message: 'Password reset successfully',
+      message: 'User reset successfully - password updated and account unlocked',
       email: 'simrubin13@gmail.com',
       password: 'admin123',
+      userId: user.id,
     })
+    
   } catch (error: any) {
-    console.error('❌ Error resetting password:', error.message)
+    console.error('❌ Error resetting user:', error.message)
     return NextResponse.json(
       {
         success: false,
