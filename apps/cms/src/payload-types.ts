@@ -73,7 +73,6 @@ export interface Config {
     categories: Category;
     users: User;
     projects: Project;
-    'test-projects': TestProject;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -91,7 +90,6 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
-    'test-projects': TestProjectsSelect<false> | TestProjectsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -774,21 +772,7 @@ export interface Project {
   sections?:
     | {
         sectionTitle: string;
-        textBody: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        };
+        textBody: string;
         media?:
           | {
               mediaItem: number | Media;
@@ -802,17 +786,6 @@ export interface Project {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "test-projects".
- */
-export interface TestProject {
-  id: number;
-  title: string;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1010,10 +983,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: number | Project;
-      } | null)
-    | ({
-        relationTo: 'test-projects';
-        value: number | TestProject;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1407,16 +1376,6 @@ export interface ProjectsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "test-projects_select".
- */
-export interface TestProjectsSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
