@@ -31,6 +31,14 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  async rewrites() {
+    return [
+      {
+        source: '/api/media/file/:path*',
+        destination: '/media/:path*',
+      },
+    ]
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
