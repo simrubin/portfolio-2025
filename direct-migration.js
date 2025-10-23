@@ -33,12 +33,14 @@ async function migrateData() {
     "🚀 Starting direct database migration from SQLite to Postgres...\n"
   );
 
-  // Get Postgres URL from user
-  POSTGRES_URL = await question(
-    "Enter your Vercel Postgres URL (from Vercel dashboard → Storage → Postgres → Connect): "
-  );
+  // Get Postgres URL from environment variable or user input
+  POSTGRES_URL =
+    process.env.POSTGRES_URL ||
+    (await question(
+      "Enter your Vercel Postgres URL (from Vercel dashboard → Storage → Postgres → Connect): "
+    ));
 
-  if (!POSTGRES_URL.trim()) {
+  if (!POSTGRES_URL || !POSTGRES_URL.trim()) {
     console.log("❌ Postgres URL is required");
     process.exit(1);
   }

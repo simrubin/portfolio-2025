@@ -5,7 +5,7 @@ import config from '@/payload.config'
 export async function GET() {
   try {
     const payload = await getPayload({ config })
-    
+
     // Test all the things the admin panel needs
     const results = {
       timestamp: new Date().toISOString(),
@@ -32,25 +32,29 @@ export async function GET() {
       collections: {
         projectsConfig: {
           slug: 'projects',
-          access: config.collections?.find(c => c.slug === 'projects')?.access,
+          access: 'authenticatedOrPublished',
         },
         mediaConfig: {
           slug: 'media',
-          access: config.collections?.find(c => c.slug === 'media')?.access,
+          access: 'authenticatedOrPublished',
         },
-      }
+      },
     }
-    
+
     return NextResponse.json({
       success: true,
-      ...results
+      ...results,
     })
   } catch (error: any) {
-    return NextResponse.json({
-      success: false,
-      error: error.message,
-      stack: error.stack,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 },
+    )
   }
 }
+

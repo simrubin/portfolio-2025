@@ -30,7 +30,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS pages_blocks_cta (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           _parent_id UUID NOT NULL,
@@ -41,7 +41,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS pages_blocks_cta_links (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           _parent_id UUID NOT NULL,
@@ -54,7 +54,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS pages_blocks_content (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           _parent_id UUID NOT NULL,
@@ -64,7 +64,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS pages_blocks_content_columns (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           _parent_id UUID NOT NULL,
@@ -80,7 +80,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS pages_blocks_mediaBlock (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           _parent_id UUID NOT NULL,
@@ -90,7 +90,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS pages_blocks_archive (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           _parent_id UUID NOT NULL,
@@ -100,7 +100,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS pages_blocks_formBlock (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           _parent_id UUID NOT NULL,
@@ -110,7 +110,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS pages_rels (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           parent_id UUID NOT NULL,
@@ -121,7 +121,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         // Header relationship tables
         `CREATE TABLE IF NOT EXISTS header_nav_items (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -134,7 +134,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS header_rels (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           parent_id UUID NOT NULL,
@@ -145,7 +145,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         // Footer relationship tables
         `CREATE TABLE IF NOT EXISTS footer_nav_items (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -158,7 +158,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         `CREATE TABLE IF NOT EXISTS footer_rels (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           parent_id UUID NOT NULL,
@@ -169,7 +169,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         // Posts relationship tables
         `CREATE TABLE IF NOT EXISTS posts_rels (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -182,7 +182,7 @@ export async function POST() {
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
         )`,
-        
+
         // Redirects relationship tables
         `CREATE TABLE IF NOT EXISTS redirects_rels (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -193,7 +193,7 @@ export async function POST() {
           posts_id UUID,
           created_at TIMESTAMP DEFAULT NOW(),
           updated_at TIMESTAMP DEFAULT NOW()
-        )`
+        )`,
       ]
 
       // Create all relationship tables
@@ -217,7 +217,7 @@ export async function POST() {
         'CREATE INDEX IF NOT EXISTS idx_footer_nav_items_parent_id ON footer_nav_items(_parent_id)',
         'CREATE INDEX IF NOT EXISTS idx_footer_rels_parent_id ON footer_rels(parent_id)',
         'CREATE INDEX IF NOT EXISTS idx_posts_rels_parent_id ON posts_rels(parent_id)',
-        'CREATE INDEX IF NOT EXISTS idx_redirects_rels_parent_id ON redirects_rels(parent_id)'
+        'CREATE INDEX IF NOT EXISTS idx_redirects_rels_parent_id ON redirects_rels(parent_id)',
       ]
 
       for (const indexSQL of indexes) {
@@ -230,7 +230,7 @@ export async function POST() {
         success: true,
         message: 'All relationship tables created successfully',
         tablesCreated: relationshipTables.length,
-        indexesCreated: indexes.length
+        indexesCreated: indexes.length,
       })
     } catch (error) {
       await client.query('ROLLBACK')
@@ -245,3 +245,4 @@ export async function POST() {
     await pgPool.end()
   }
 }
+

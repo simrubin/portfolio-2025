@@ -65,9 +65,9 @@ export async function GET() {
 
       await client.query('COMMIT')
 
-      return NextResponse.json({ 
-        success: true, 
-        message: 'All missing columns added to media table' 
+      return NextResponse.json({
+        success: true,
+        message: 'All missing columns added to media table',
       })
     } catch (error) {
       await client.query('ROLLBACK')
@@ -82,3 +82,4 @@ export async function GET() {
     await pgPool.end()
   }
 }
+
