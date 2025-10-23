@@ -13,7 +13,6 @@ import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { Project } from './collections/Project'
-import { TestProject } from './collections/TestProject'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -78,7 +77,7 @@ export default buildConfig({
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
   db: databaseAdapter,
-  collections: [Pages, Posts, Media, Categories, Users, Project, TestProject],
+  collections: [Pages, Posts, Media, Categories, Users, Project],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
