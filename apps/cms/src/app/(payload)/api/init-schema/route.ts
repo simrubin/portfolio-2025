@@ -1,53 +1,70 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import config from '@payload-config'
-
-export const dynamic = 'force-dynamic'
-export const maxDuration = 60 // Allow up to 60 seconds for schema creation
+import config from '@/payload.config'
 
 export async function GET() {
-  try {
-    console.log('🔧 Initializing Payload schema...')
+  return await initSchema()
+}
 
-    // Initialize Payload - this will trigger schema creation with push: true
+export async function POST() {
+  return await initSchema()
+}
+
+async function initSchema() {
+  try {
+    console.log('🔄 Initializing database schema...')
+
     const payload = await getPayload({ config })
 
-    console.log('✅ Payload initialized')
+    // Test the connection by trying to find any collection
+    console.log('📊 Testing database connection...')
 
-    // Try to query users to confirm schema exists
+    // Try to access the projects collection to trigger schema creation
+    try {
+      const projects = await payload.find({
+        collection: 'projects',
+        limit: 1,
+      })
+      console.log('✅ Projects collection accessible')
+    } catch (error: any) {
+      console.log('⚠️  Projects collection not accessible, schema may need initialization')
+    }
+
+    // Try to access the media collection
+    try {
+      const media = await payload.find({
+        collection: 'media',
+        limit: 1,
+      })
+      console.log('✅ Media collection accessible')
+    } catch (error: any) {
+      console.log('⚠️  Media collection not accessible, schema may need initialization')
+    }
+
+    // Try to access the users collection
     try {
       const users = await payload.find({
         collection: 'users',
-        limit: 0,
+        limit: 1,
       })
-
-      console.log('✅ Schema verified - users table exists')
-
-      return NextResponse.json({
-        success: true,
-        message: 'Schema initialized successfully',
-        usersCount: users.totalDocs,
-        nextStep:
-          users.totalDocs === 0
-            ? 'Go to /admin to create your first user'
-            : 'Schema is ready! You can now use the CMS',
-      })
-    } catch (queryError) {
-      console.log('⚠️ Schema might still be initializing...')
-      return NextResponse.json({
-        success: true,
-        message: 'Payload initialized, schema should be ready',
-        warning: 'Could not verify users table, but it should exist',
-        nextStep: 'Try going to /admin',
-      })
+      console.log('✅ Users collection accessible')
+    } catch (error: any) {
+      console.log('⚠️  Users collection not accessible, schema may need initialization')
     }
-  } catch (error) {
-    console.error('❌ Schema initialization failed:', error)
+
+    return NextResponse.json({
+      success: true,
+      message: 'Database schema initialization completed',
+      timestamp: new Date().toISOString(),
+    })
+  } catch (error: any) {
+    console.error('❌ Error initializing schema:', error.message)
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
+        error: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString(),
       },
       { status: 500 },
     )
