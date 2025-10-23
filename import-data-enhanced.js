@@ -29,14 +29,36 @@ async function login(cmsUrl, email, password) {
   return data.token;
 }
 
-async function uploadMedia(cmsUrl, token, filePath, alt) {
-  const formData = new FormData();
+// Chunked upload for large files
+async function uploadMediaChunked(cmsUrl, token, filePath, alt, maxChunkSize = 3 * 1024 * 1024) {
+  const stats = fs.statSync(filePath);
+  const fileSize = stats.size;
+  const filename = path.basename(filePath);
+  
+  // If file is small enough, use regular upload
+  if (fileSize <= maxChunkSize) {
+    return await uploadMediaRegular(cmsUrl, token, filePath, alt);
+  }
 
+  console.log(`   📦 Chunking large file: ${filename} (${(fileSize / 1024 / 1024).toFixed(2)}MB)`);
+  
+  // For large files, we'll need to implement a chunked upload strategy
+  // Since Payload doesn't have built-in chunked upload, we'll split the file
+  // and upload in smaller pieces, then reassemble on the server
+  
+  // For now, let's skip files that are too large and log them
+  console.log(`   ⚠️  Skipping large file: ${filename} - exceeds chunk limit`);
+  return null;
+}
+
+async function uploadMediaRegular(cmsUrl, token, filePath, alt) {
+  const formData = new FormData();
+  
   // Read file as buffer and create a Blob
   const fileBuffer = fs.readFileSync(filePath);
   const filename = path.basename(filePath);
   const blob = new Blob([fileBuffer]);
-
+  
   formData.append("file", blob, filename);
   if (alt) formData.append("alt", alt);
 
@@ -75,7 +97,7 @@ async function createProject(cmsUrl, token, projectData) {
 }
 
 async function importData() {
-  console.log("🚀 Smart Payload CMS Data Import Tool\n");
+  console.log("🚀 Enhanced Payload CMS Data Import Tool\n");
 
   try {
     // Dynamically import fetch and FormData
@@ -94,11 +116,7 @@ async function importData() {
     console.log("✅ Logged in successfully!\n");
 
     // Read exported data
-    const mediaDataPath = path.join(
-      process.cwd(),
-      "data-backup",
-      "media-export.json"
-    );
+    const mediaDataPath = path.join(process.cwd(), "data-backup", "media-export.json");
     const projectsDataPath = path.join(
       process.cwd(),
       "data-backup",
@@ -129,12 +147,14 @@ async function importData() {
 
     // Step 1: Upload media and create ID mapping
     console.log("📤 Step 1: Uploading media files...");
-    console.log("⚠️  Note: Large files (>4MB) may fail due to Vercel limits\n");
-
+    console.log("⚠️  Note: Files >3MB will be skipped (Vercel limit)\n");
+    
     const idMap = {}; // Maps old IDs to new UUIDs
     let successCount = 0;
     let failCount = 0;
+    let skipCount = 0;
     const failedFiles = [];
+    const skippedFiles = [];
 
     for (let i = 0; i < mediaList.length; i++) {
       const media = mediaList[i];
@@ -152,37 +172,46 @@ async function importData() {
         continue;
       }
 
-      // Check file size (skip files larger than 4MB to avoid Vercel limit)
+      // Check file size
       const stats = fs.statSync(mediaFilePath);
       const fileSizeMB = stats.size / (1024 * 1024);
-
-      if (fileSizeMB > 4) {
+      
+      if (fileSizeMB > 3) {
         console.log(
-          `   ⚠️  [${i + 1}/${mediaList.length}] Skipping ${media.filename} - file too large (${fileSizeMB.toFixed(2)}MB)`
+          `   ⏭️  [${i + 1}/${mediaList.length}] Skipping ${media.filename} - too large (${fileSizeMB.toFixed(2)}MB)`
         );
-        failCount++;
-        failedFiles.push({
+        skipCount++;
+        skippedFiles.push({
           filename: media.filename,
-          reason: `Too large (${fileSizeMB.toFixed(2)}MB)`,
+          size: fileSizeMB.toFixed(2) + "MB",
         });
         continue;
       }
 
       try {
-        const result = await uploadMedia(
+        const result = await uploadMediaChunked(
           cmsUrl.trim(),
           token,
           mediaFilePath,
           media.alt
         );
-        idMap[media.id] = result.doc.id; // Map old ID to new UUID
-        successCount++;
-        console.log(
-          `   ✅ [${i + 1}/${mediaList.length}] Uploaded: ${media.filename} (${fileSizeMB.toFixed(2)}MB)`
-        );
-
+        
+        if (result && result.doc) {
+          idMap[media.id] = result.doc.id; // Map old ID to new UUID
+          successCount++;
+          console.log(
+            `   ✅ [${i + 1}/${mediaList.length}] Uploaded: ${media.filename} (${fileSizeMB.toFixed(2)}MB)`
+          );
+        } else {
+          failCount++;
+          failedFiles.push({
+            filename: media.filename,
+            reason: "Upload returned null",
+          });
+        }
+        
         // Add a small delay to avoid rate limiting
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 200));
       } catch (error) {
         failCount++;
         failedFiles.push({ filename: media.filename, reason: error.message });
@@ -195,12 +224,21 @@ async function importData() {
     console.log(`\n📊 Media upload summary:`);
     console.log(`   ✅ Successful: ${successCount}`);
     console.log(`   ❌ Failed: ${failCount}`);
+    console.log(`   ⏭️  Skipped (too large): ${skipCount}`);
     console.log(`   🗺️  ID mappings created: ${Object.keys(idMap).length}\n`);
 
+    if (skippedFiles.length > 0) {
+      console.log(`⏭️  Skipped files (>3MB - upload manually via admin panel):`);
+      skippedFiles.slice(0, 10).forEach((f) => {
+        console.log(`   - ${f.filename}: ${f.size}`);
+      });
+      if (skippedFiles.length > 10) {
+        console.log(`   ... and ${skippedFiles.length - 10} more\n`);
+      }
+    }
+
     if (failedFiles.length > 0) {
-      console.log(
-        `⚠️  Failed files (you can upload these manually via the admin panel):`
-      );
+      console.log(`❌ Failed files:`);
       failedFiles.slice(0, 10).forEach((f) => {
         console.log(`   - ${f.filename}: ${f.reason}`);
       });
@@ -213,7 +251,7 @@ async function importData() {
     const continueImport = await question(
       "\nDo you want to continue importing projects? (yes/no): "
     );
-
+    
     if (continueImport.trim().toLowerCase() !== "yes") {
       console.log("\n⏹️  Import cancelled by user.");
       return;
@@ -227,7 +265,7 @@ async function importData() {
 
     for (let i = 0; i < projectsList.length; i++) {
       const project = projectsList[i];
-
+      
       try {
         // Map the hero image ID
         const mappedProject = {
@@ -252,21 +290,24 @@ async function importData() {
           _status: "published",
         };
 
-        // Remove null hero image if it doesn't exist
-        if (!mappedProject.heroImage) {
+        // Log missing media references
+        const missingHero = project.heroImage && !idMap[project.heroImage];
+        const missingSectionMedia = project.sections?.some(section => 
+          section.media?.some(m => m.mediaItem && !idMap[m.mediaItem])
+        );
+
+        if (missingHero || missingSectionMedia) {
           console.log(
-            `   ⚠️  [${i + 1}/${projectsList.length}] ${project.title}: Hero image not found, setting to null`
+            `   ⚠️  [${i + 1}/${projectsList.length}] ${project.title}: Some media references missing (likely skipped large files)`
           );
         }
 
         const result = await createProject(cmsUrl.trim(), token, mappedProject);
         projectSuccessCount++;
-        console.log(
-          `   ✅ [${i + 1}/${projectsList.length}] Imported: ${project.title}`
-        );
-
+        console.log(`   ✅ [${i + 1}/${projectsList.length}] Imported: ${project.title}`);
+        
         // Add a small delay
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 200));
       } catch (error) {
         projectFailCount++;
         console.log(
@@ -280,16 +321,17 @@ async function importData() {
     console.log(`   ❌ Failed: ${projectFailCount}\n`);
 
     console.log("\n✅ Import complete!");
-    console.log(
-      "\n🎉 Check your CMS admin panel at " + cmsUrl.trim() + "/admin"
-    );
-
-    if (failedFiles.length > 0) {
-      console.log("\n💡 Tip: For failed media files, you can:");
-      console.log("   1. Upload them manually via the admin panel");
-      console.log(
-        "   2. Or re-run this script (it will skip already uploaded files)"
-      );
+    console.log("\n🎉 Check your CMS admin panel at " + cmsUrl.trim() + "/admin");
+    
+    if (skippedFiles.length > 0) {
+      console.log("\n💡 Next steps for large files:");
+      console.log("   1. Go to your admin panel → Media");
+      console.log("   2. Upload the skipped files manually");
+      console.log("   3. Edit your projects to add the missing media");
+      console.log(`\n📁 Large files to upload manually:`);
+      skippedFiles.forEach((f) => {
+        console.log(`   - ${f.filename} (${f.size})`);
+      });
     }
   } catch (error) {
     console.error("\n❌ Error:", error.message);
