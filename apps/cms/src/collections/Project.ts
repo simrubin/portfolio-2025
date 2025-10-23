@@ -6,10 +6,10 @@ import { defaultLexical } from '../fields/defaultLexical'
 export const Project: CollectionConfig = {
   slug: 'projects',
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: anyone,
-    update: authenticated,
+    create: ({ req: { user } }) => Boolean(user),
+    delete: ({ req: { user } }) => Boolean(user),
+    read: () => true,
+    update: ({ req: { user } }) => Boolean(user),
   },
   defaultPopulate: {
     title: true,

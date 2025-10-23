@@ -13,14 +13,14 @@ export async function POST() {
 async function debugAdminBlank() {
   try {
     console.log('🔄 Debugging admin blank page issue...')
-    
+
     const payload = await getPayload({ config })
-    
+
     // Check if the admin interface is properly configured
     const adminConfig = payload.config.admin
     const collections = payload.config.collections || []
-    const projectsCollection = collections.find(c => c.slug === 'projects')
-    
+    const projectsCollection = collections.find((c) => c.slug === 'projects')
+
     // Test if we can access the projects collection directly
     let projectsTest = null
     try {
@@ -30,7 +30,7 @@ async function debugAdminBlank() {
         page: 1,
         sort: '-updatedAt',
       })
-      
+
       projectsTest = {
         success: true,
         count: projects.docs.length,
@@ -51,7 +51,7 @@ async function debugAdminBlank() {
         message: 'Failed to access projects collection',
       }
     }
-    
+
     // Test the exact API call the admin interface should make
     let adminAPITest = null
     try {
@@ -66,7 +66,7 @@ async function debugAdminBlank() {
           },
         },
       })
-      
+
       adminAPITest = {
         success: true,
         count: adminAPI.docs.length,
@@ -80,7 +80,7 @@ async function debugAdminBlank() {
         message: 'Admin API call failed',
       }
     }
-    
+
     // Check collection configuration
     const collectionConfig = {
       exists: !!projectsCollection,
@@ -90,40 +90,47 @@ async function debugAdminBlank() {
       fields: projectsCollection?.fields?.length || 0,
       versions: projectsCollection?.versions,
     }
-    
+
     // Check if there are any issues with the collection
     const issues = []
-    
+
     if (!projectsCollection) {
       issues.push('Projects collection not found in configuration')
     }
-    
+
     if (projectsCollection && !projectsCollection.admin) {
       issues.push('Projects collection has no admin configuration')
     }
-    
+
     if (projectsCollection && !projectsCollection.access) {
       issues.push('Projects collection has no access control')
     }
-    
-    if (projectsCollection && projectsCollection.access && Object.keys(projectsCollection.access).length === 0) {
+
+    if (
+      projectsCollection &&
+      projectsCollection.access &&
+      Object.keys(projectsCollection.access).length === 0
+    ) {
       issues.push('Projects collection access control is empty')
     }
-    
-    if (projectsCollection && (!projectsCollection.fields || projectsCollection.fields.length === 0)) {
+
+    if (
+      projectsCollection &&
+      (!projectsCollection.fields || projectsCollection.fields.length === 0)
+    ) {
       issues.push('Projects collection has no fields')
     }
-    
+
     // Check if the collection has the required fields for admin display
     const requiredFields = ['title', 'slug', 'publishedAt', 'updatedAt']
-    const missingFields = requiredFields.filter(field => 
-      !projectsCollection?.fields?.some(f => 'name' in f && f.name === field)
+    const missingFields = requiredFields.filter(
+      (field) => !projectsCollection?.fields?.some((f) => 'name' in f && f.name === field),
     )
-    
+
     if (missingFields.length > 0) {
       issues.push(`Missing required fields: ${missingFields.join(', ')}`)
     }
-    
+
     // Test if the collection can be accessed through the admin interface
     let adminInterfaceTest = null
     try {
@@ -134,7 +141,7 @@ async function debugAdminBlank() {
         page: 1,
         sort: '-updatedAt',
       })
-      
+
       adminInterfaceTest = {
         success: true,
         count: adminInterface.docs.length,
@@ -148,7 +155,7 @@ async function debugAdminBlank() {
         message: 'Admin interface cannot access projects',
       }
     }
-    
+
     // Check environment variables
     const envCheck = {
       NODE_ENV: process.env.NODE_ENV,
@@ -157,7 +164,7 @@ async function debugAdminBlank() {
       PAYLOAD_SECRET: process.env.PAYLOAD_SECRET ? 'Set' : 'Not set',
       POSTGRES_URL: process.env.POSTGRES_URL ? 'Set' : 'Not set',
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'Admin blank page debugging completed',
@@ -172,21 +179,23 @@ async function debugAdminBlank() {
       adminInterfaceTest,
       issues,
       envCheck,
-      suggestions: issues.length > 0 ? [
-        'Fix collection configuration issues',
-        'Ensure all required fields are present',
-        'Verify access control is properly configured',
-        'Check admin configuration',
-      ] : [
-        'Collection configuration looks correct',
-        'Check browser console for JavaScript errors',
-        'Verify admin interface is loading properly',
-        'Check if there are any network errors',
-        'Verify authentication is working',
-      ],
+      suggestions:
+        issues.length > 0
+          ? [
+              'Fix collection configuration issues',
+              'Ensure all required fields are present',
+              'Verify access control is properly configured',
+              'Check admin configuration',
+            ]
+          : [
+              'Collection configuration looks correct',
+              'Check browser console for JavaScript errors',
+              'Verify admin interface is loading properly',
+              'Check if there are any network errors',
+              'Verify authentication is working',
+            ],
       timestamp: new Date().toISOString(),
     })
-    
   } catch (error: any) {
     console.error('❌ Error debugging admin blank page:', error.message)
     return NextResponse.json(
