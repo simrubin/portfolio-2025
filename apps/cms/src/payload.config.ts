@@ -78,7 +78,11 @@ export default buildConfig({
   editor: defaultLexical,
   db: databaseAdapter,
   collections: [Pages, Posts, Media, Categories, Users, Project],
-  cors: [getServerSideURL()].filter(Boolean),
+  cors: [
+    getServerSideURL(),
+    'https://portfolio-cms-fawn-one.vercel.app',
+    'http://localhost:3000',
+  ].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
     ...plugins,

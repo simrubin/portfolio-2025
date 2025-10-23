@@ -13,16 +13,16 @@ export async function POST() {
 async function debugAdminFrontend() {
   try {
     console.log('🔄 Debugging admin frontend configuration...')
-    
+
     const payload = await getPayload({ config })
-    
+
     // Check admin configuration
     const adminConfig = payload.config.admin
-    
+
     // Check collections configuration
     const collections = payload.config.collections || []
-    const projectsCollection = collections.find(c => c.slug === 'projects')
-    
+    const projectsCollection = collections.find((c) => c.slug === 'projects')
+
     // Check if admin routes are properly configured
     const adminRoutes = {
       login: '/admin/login',
@@ -30,7 +30,7 @@ async function debugAdminFrontend() {
       collections: '/admin/collections',
       projects: '/admin/collections/projects',
     }
-    
+
     // Check environment variables that might affect frontend
     const frontendEnv = {
       NODE_ENV: process.env.NODE_ENV,
@@ -38,7 +38,7 @@ async function debugAdminFrontend() {
       VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,
       PAYLOAD_SECRET: process.env.PAYLOAD_SECRET ? 'Set' : 'Not set',
     }
-    
+
     // Test if we can access the admin interface programmatically
     let adminAccessTest = null
     try {
@@ -59,10 +59,10 @@ async function debugAdminFrontend() {
         message: 'Admin interface cannot access collections',
       }
     }
-    
+
     // Check if there are any potential issues with the collection configuration
     const collectionIssues = []
-    
+
     if (!projectsCollection) {
       collectionIssues.push('Projects collection not found in configuration')
     } else {
@@ -76,10 +76,10 @@ async function debugAdminFrontend() {
         collectionIssues.push('Projects collection access control is empty object')
       }
     }
-    
+
     // Check if there are any potential issues with the admin configuration
     const adminIssues = []
-    
+
     if (!adminConfig) {
       adminIssues.push('No admin configuration found')
     } else {
@@ -90,7 +90,7 @@ async function debugAdminFrontend() {
         adminIssues.push('No admin meta configuration')
       }
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'Admin frontend debugging completed',
@@ -124,7 +124,6 @@ async function debugAdminFrontend() {
       ],
       timestamp: new Date().toISOString(),
     })
-    
   } catch (error: any) {
     console.error('❌ Error debugging admin frontend:', error.message)
     return NextResponse.json(

@@ -13,12 +13,12 @@ export async function POST(request: Request) {
 async function simulateAdminRequest(request: Request) {
   try {
     console.log('🔄 Simulating admin interface request...')
-    
+
     const payload = await getPayload({ config })
-    
+
     // Get request headers to simulate what the admin interface sends
     const headers = Object.fromEntries(request.headers.entries())
-    
+
     // Simulate the exact request the admin interface should make
     const adminRequest = {
       collection: 'projects',
@@ -31,17 +31,17 @@ async function simulateAdminRequest(request: Request) {
         },
       },
     }
-    
+
     console.log('🔄 Making admin request:', adminRequest)
-    
+
     // Make the request
     const result = await payload.find(adminRequest as any)
-    
+
     console.log('✅ Admin request successful:', {
       count: result.docs.length,
       totalDocs: result.totalDocs,
     })
-    
+
     // Also test without the _status filter
     const adminRequestNoFilter = {
       collection: 'projects',
@@ -49,29 +49,29 @@ async function simulateAdminRequest(request: Request) {
       page: 1,
       sort: '-updatedAt',
     }
-    
+
     console.log('🔄 Making admin request without filter:', adminRequestNoFilter)
-    
+
     const resultNoFilter = await payload.find(adminRequestNoFilter as any)
-    
+
     console.log('✅ Admin request without filter successful:', {
       count: resultNoFilter.docs.length,
       totalDocs: resultNoFilter.totalDocs,
     })
-    
+
     // Test with different access levels
     const accessTests = {
       withAuth: result,
       withoutAuth: resultNoFilter,
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'Admin interface request simulation completed',
       request: {
         headers: {
           'user-agent': headers['user-agent'],
-          'accept': headers['accept'],
+          accept: headers['accept'],
           'content-type': headers['content-type'],
         },
         adminRequest,
@@ -123,7 +123,6 @@ async function simulateAdminRequest(request: Request) {
       },
       timestamp: new Date().toISOString(),
     })
-    
   } catch (error: any) {
     console.error('❌ Error simulating admin request:', error.message)
     return NextResponse.json(
