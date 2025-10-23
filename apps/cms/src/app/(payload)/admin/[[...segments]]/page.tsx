@@ -1,29 +1,39 @@
-/* THIS FILE WAS GENERATED AUTOMATICALLY BY PAYLOAD. */
-/* DO NOT MODIFY IT BECAUSE IT COULD BE REWRITTEN AT ANY TIME. */
-import type { Metadata } from 'next'
-import { unstable_noStore as noStore } from 'next/cache'
-
+import { unstable_noStore } from 'next/cache'
+import { notFound } from 'next/navigation'
+import { getPayload } from 'payload'
 import config from '@payload-config'
-import { RootPage, generatePageMetadata } from '@payloadcms/next/views'
-import { importMap } from '../importMap'
+import { RootPage } from '@payloadcms/next/views'
 
 type Args = {
-  params: Promise<{
+  params: {
     segments: string[]
-  }>
-  searchParams: Promise<{
-    [key: string]: string | string[]
-  }>
+  }
 }
 
-export const generateMetadata = ({ params, searchParams }: Args): Promise<Metadata> => {
-  noStore() // Prevent caching to ensure fresh data
-  return generatePageMetadata({ config, params, searchParams })
+export const generateMetadata = async ({ params }: Args) => {
+  unstable_noStore()
+  
+  const { segments } = params
+  const path = segments?.join('/') || ''
+
+  return {
+    title: 'Admin',
+  }
 }
 
-const Page = ({ params, searchParams }: Args) => {
-  noStore() // Prevent caching to ensure fresh data
-  return RootPage({ config, params, searchParams, importMap })
+const Page = async ({ params }: Args) => {
+  unstable_noStore()
+  
+  const { segments } = params
+  const path = segments?.join('/') || ''
+
+  const payload = await getPayload({ config })
+
+  if (!payload) {
+    return notFound()
+  }
+
+  return <RootPage />
 }
 
 export default Page
