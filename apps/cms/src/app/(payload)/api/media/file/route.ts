@@ -8,21 +8,21 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const filename = searchParams.get('filename')
-    
+
     if (!filename) {
       return new NextResponse('Filename required', { status: 400 })
     }
 
     const payload = await getPayload({ config })
-    
+
     // Get the media collection configuration
-    const mediaCollection = payload.config.collections.find(c => c.slug === 'media')
+    const mediaCollection = payload.config.collections.find((c) => c.slug === 'media')
     if (!mediaCollection?.upload?.staticDir) {
       return new NextResponse('Media collection not configured', { status: 500 })
     }
 
     const filePath = path.join(mediaCollection.upload.staticDir, filename)
-    
+
     // Check if file exists
     if (!fs.existsSync(filePath)) {
       return new NextResponse('File not found', { status: 404 })
@@ -30,11 +30,11 @@ export async function GET(request: NextRequest) {
 
     // Read the file
     const fileBuffer = fs.readFileSync(filePath)
-    
+
     // Get file extension to determine content type
     const ext = path.extname(filename).toLowerCase()
     let contentType = 'application/octet-stream'
-    
+
     switch (ext) {
       case '.jpg':
       case '.jpeg':
