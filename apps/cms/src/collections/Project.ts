@@ -11,6 +11,11 @@ export const Project: CollectionConfig = {
     read: authenticatedOrPublished,
     update: authenticated,
   },
+  defaultPopulate: {
+    title: true,
+    slug: true,
+    heroImage: true,
+  },
   admin: {
     defaultColumns: ['title', 'slug', 'publishedAt', 'updatedAt'],
     useAsTitle: 'title',
