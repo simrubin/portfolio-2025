@@ -84,8 +84,7 @@ export const Project: CollectionConfig = {
         },
         {
           name: 'textBody',
-          type: 'richText',
-          editor: defaultLexical,
+          type: 'textarea',
           required: true,
         },
         {
