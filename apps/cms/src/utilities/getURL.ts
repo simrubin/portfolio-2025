@@ -1,11 +1,15 @@
 import canUseDOM from './canUseDOM'
 
 export const getServerSideURL = () => {
+  // In production, use the actual Vercel URL if available
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  }
+  
+  // Fallback to NEXT_PUBLIC_SERVER_URL or localhost
   return (
     process.env.NEXT_PUBLIC_SERVER_URL ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : 'http://localhost:3000')
+    'http://localhost:3000'
   )
 }
 
@@ -18,6 +22,7 @@ export const getClientSideURL = () => {
     return `${protocol}//${domain}${port ? `:${port}` : ''}`
   }
 
+  // In production, use the actual Vercel URL if available
   if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
     return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   }
