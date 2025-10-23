@@ -3,7 +3,15 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import bcrypt from 'bcryptjs'
 
+export async function GET() {
+  return await resetPassword()
+}
+
 export async function POST() {
+  return await resetPassword()
+}
+
+async function resetPassword() {
   try {
     const payload = await getPayload({ config })
     
