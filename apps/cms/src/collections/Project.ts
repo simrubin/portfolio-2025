@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../access/authenticated'
-import { authenticatedOrPublished } from '../access/authenticatedOrPublished'
+import { anyone } from '../access/anyone'
 import { defaultLexical } from '../fields/defaultLexical'
 
 export const Project: CollectionConfig = {
@@ -8,7 +8,7 @@ export const Project: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: anyone,
     update: authenticated,
   },
   defaultPopulate: {

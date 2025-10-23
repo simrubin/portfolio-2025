@@ -5,19 +5,20 @@ import config from '@/payload.config'
 export async function GET() {
   try {
     const payload = await getPayload({ config })
-    
+
     // Get the database connection
     const db = payload.db
-    
+
     // For now, just return success - the schema will be fixed by Payload's auto-migration
-    console.log('✅ Schema fix endpoint called - Payload will handle schema migration automatically')
-    
+    console.log(
+      '✅ Schema fix endpoint called - Payload will handle schema migration automatically',
+    )
+
     return NextResponse.json({
       success: true,
       message: 'Database schema cleaned up successfully',
       timestamp: new Date().toISOString(),
     })
-    
   } catch (error: any) {
     return NextResponse.json(
       {
