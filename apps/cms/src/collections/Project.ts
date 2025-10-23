@@ -19,9 +19,15 @@ export const Project: CollectionConfig = {
   admin: {
     defaultColumns: ['title', 'slug', 'publishedAt', 'updatedAt'],
     useAsTitle: 'title',
+    pagination: {
+      defaultLimit: 10,
+      limits: [5, 10, 25, 50, 100],
+    },
   },
   versions: {
-    drafts: true,
+    drafts: {
+      autosave: false,
+    },
   },
   fields: [
     {
@@ -71,6 +77,24 @@ export const Project: CollectionConfig = {
       type: 'checkbox',
       label: 'Newly added?',
       required: false,
+    },
+    {
+      name: '_status',
+      type: 'select',
+      options: [
+        {
+          label: 'Published',
+          value: 'published',
+        },
+        {
+          label: 'Draft',
+          value: 'draft',
+        },
+      ],
+      defaultValue: 'published',
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'sections',
