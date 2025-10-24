@@ -33,7 +33,14 @@ const Page = async ({ params }: PageProps) => {
     return notFound()
   }
 
-  return <RootPage />
+  return (
+    <RootPage
+      config={payload.config}
+      importMap={{}}
+      params={params}
+      searchParams={Promise.resolve({})}
+    />
+  )
 }
 
 export default Page
