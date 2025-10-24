@@ -4,28 +4,28 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { RootPage } from '@payloadcms/next/views'
 
-type Args = {
-  params: {
+type PageProps = {
+  params: Promise<{
     segments: string[]
-  }
+  }>
 }
 
-export const generateMetadata = async ({ params }: Args) => {
+export const generateMetadata = async ({ params }: PageProps) => {
   unstable_noStore()
 
-  const { segments } = params
-  const path = segments?.join('/') || ''
+  const { segments } = await params
+  const _path = segments?.join('/') || ''
 
   return {
     title: 'Admin',
   }
 }
 
-const Page = async ({ params }: Args) => {
+const Page = async ({ params }: PageProps) => {
   unstable_noStore()
 
-  const { segments } = params
-  const path = segments?.join('/') || ''
+  const { segments } = await params
+  const _path = segments?.join('/') || ''
 
   const payload = await getPayload({ config })
 

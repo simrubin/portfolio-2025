@@ -1,7 +1,4 @@
 import type { CollectionConfig } from 'payload'
-import { authenticated } from '../access/authenticated'
-import { anyone } from '../access/anyone'
-import { defaultLexical } from '../fields/defaultLexical'
 
 export const Project: CollectionConfig = {
   slug: 'projects',
