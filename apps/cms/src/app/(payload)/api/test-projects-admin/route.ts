@@ -64,13 +64,15 @@ export async function GET() {
           hasNextPage: result.hasNextPage,
           hasPrevPage: result.hasPrevPage,
           docsCount: result.docs.length,
-          firstDoc: result.docs[0] ? {
-            id: result.docs[0].id,
-            title: result.docs[0].title,
-            slug: result.docs[0].slug,
-            publishedAt: result.docs[0].publishedAt,
-            _status: result.docs[0]._status,
-          } : null,
+          firstDoc: result.docs[0]
+            ? {
+                id: result.docs[0].id,
+                title: result.docs[0].title,
+                slug: result.docs[0].slug,
+                publishedAt: result.docs[0].publishedAt,
+                _status: result.docs[0]._status,
+              }
+            : null,
         },
       },
       allQuery: {
@@ -97,7 +99,7 @@ export async function GET() {
         stack: error.stack,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

@@ -12,7 +12,7 @@ type Args = {
 
 export const generateMetadata = async ({ params }: Args) => {
   unstable_noStore()
-  
+
   const { segments } = params
   const path = segments?.join('/') || ''
 
@@ -23,7 +23,7 @@ export const generateMetadata = async ({ params }: Args) => {
 
 const Page = async ({ params }: Args) => {
   unstable_noStore()
-  
+
   const { segments } = params
   const path = segments?.join('/') || ''
 
