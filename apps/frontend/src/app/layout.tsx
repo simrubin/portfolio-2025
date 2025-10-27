@@ -37,6 +37,13 @@ export const metadata: Metadata = {
       "A range of projects made by Simeon Rubin, a Designer and Developer",
     url: "https://simeonrubin.com",
   },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: "cover",
+  },
 };
 
 export default function RootLayout({
