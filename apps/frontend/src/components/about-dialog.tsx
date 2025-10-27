@@ -83,7 +83,7 @@ export function AboutDialog() {
             <AboutDialogLink href="https://fonts.google.com/specimen/Newsreader">
               Newsreader
             </AboutDialogLink>{" "}
-            for a clean, modern look.
+            fonts.
           </p>
         </div>
       </DialogContent>
