@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion } from "motion/react";
 import type { ProjectSection } from "@/types/payload";
 import { generateSectionId } from "./project-detail";
 
@@ -55,12 +54,7 @@ export function ProjectTableOfContents({ sections }: ProjectTOCProps) {
   };
 
   return (
-    <motion.nav
-      className="w-52"
-      initial={{ opacity: 0, x: 20, filter: "blur(10px)" }}
-      animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-      transition={{ duration: 0.5, delay: 0.3 }}
-    >
+    <nav className="w-52">
       <div className="space-y-1">
         <h3 className="text-lg font-newsreader italic text-secondary-foreground mb-4">
           On this page
@@ -81,15 +75,7 @@ export function ProjectTableOfContents({ sections }: ProjectTOCProps) {
                   }`}
                 >
                   {isActive && (
-                    <motion.span
-                      className="absolute -left-[4px] top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-foreground"
-                      layoutId="activeSection"
-                      transition={{
-                        type: "spring",
-                        stiffness: 380,
-                        damping: 30,
-                      }}
-                    />
+                    <span className="absolute -left-[4px] top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-foreground" />
                   )}
                   {section.sectionTitle}
                 </button>
@@ -98,6 +84,6 @@ export function ProjectTableOfContents({ sections }: ProjectTOCProps) {
           })}
         </ul>
       </div>
-    </motion.nav>
+    </nav>
   );
 }
