@@ -34,14 +34,14 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
       >
-          <Image
-            src={getMediaUrl(project.heroImage)}
-            alt={project.heroImage.alt || project.title}
-            fill
-            className="object-cover rounded-xl"
-            priority
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-          />
+        <Image
+          src={getMediaUrl(project.heroImage)}
+          alt={project.heroImage.alt || project.title}
+          fill
+          className="object-cover rounded-xl"
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+        />
       </motion.div>
 
       {/* Content Sections */}
@@ -173,7 +173,7 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
 
       // Apply formatting - fixed to avoid nested React element issues
       let formattedText: React.ReactNode = text;
-      
+
       if (node.format) {
         if (node.format & 4) formattedText = <u>{formattedText}</u>; // Underline
         if (node.format & 2) formattedText = <em>{formattedText}</em>; // Italic

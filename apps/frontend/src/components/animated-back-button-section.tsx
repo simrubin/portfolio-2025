@@ -35,7 +35,7 @@ export function AnimatedBackButtonSectionMobile() {
       <AnimatedBackButton>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 font-newsreader italic text-secondary-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-2 font-newsreader italic text-secondary-foreground text-base hover:text-foreground transition-colors"
         >
           Home
         </Link>
