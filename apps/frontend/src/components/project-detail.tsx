@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import type { ProjectResponse, ProjectSection, Media } from "@/types/payload";
 import { getMediaUrl, isVideo, isImage } from "@/lib/payload";
-import { ImageZoom } from "@/components/kibo-ui/image-zoom";
+// import { ImageZoom } from "@/components/kibo-ui/image-zoom"; // Disabled for mobile Safari memory issues
 
 interface ProjectDetailProps {
   project: ProjectResponse;
@@ -34,7 +34,6 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
       >
-        <ImageZoom className="relative w-full h-full">
           <Image
             src={getMediaUrl(project.heroImage)}
             alt={project.heroImage.alt || project.title}
@@ -43,7 +42,6 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             priority
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
           />
-        </ImageZoom>
       </motion.div>
 
       {/* Content Sections */}
@@ -130,21 +128,20 @@ function MediaItem({ media, caption }: MediaItemProps) {
           src={getMediaUrl(media)}
           controls
           className="w-full rounded-lg"
-          preload="metadata"
+          preload="none"
         >
           Your browser does not support the video tag.
         </video>
       ) : isImage(media) ? (
         <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
-          <ImageZoom className="relative w-full h-full">
-            <Image
-              src={getMediaUrl(media)}
-              alt={media.alt || caption || "Project media"}
-              fill
-              className="object-cover rounded-lg"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          </ImageZoom>
+          <Image
+            src={getMediaUrl(media)}
+            alt={media.alt || caption || "Project media"}
+            fill
+            className="object-cover rounded-lg"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="lazy"
+          />
         </div>
       ) : null}
 
