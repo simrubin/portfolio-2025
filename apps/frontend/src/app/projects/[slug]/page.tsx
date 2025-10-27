@@ -93,6 +93,5 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   );
 }
 
-// Disable caching temporarily to test mobile issue
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Enable ISR
+export const revalidate = 60;

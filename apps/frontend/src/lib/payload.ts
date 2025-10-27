@@ -41,7 +41,7 @@ export async function getProjectBySlug(
     const response = await fetch(
       `${CMS_URL}/api/projects?where[slug][equals]=${slug}&depth=2`,
       {
-        cache: 'no-store', // Disable caching temporarily to test mobile issue
+        next: { revalidate: 60 }, // Revalidate every 60 seconds for ISR
       }
     );
 
