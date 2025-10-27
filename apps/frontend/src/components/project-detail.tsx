@@ -2,7 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion } from "motion/react";
 import type { ProjectResponse, ProjectSection, Media } from "@/types/payload";
 import { getMediaUrl, isVideo, isImage } from "@/lib/payload";
 import { ImageZoom } from "@/components/kibo-ui/image-zoom";
@@ -20,28 +19,18 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
   return (
     <div className="w-full max-w-xs md:max-w-2xl mx-auto">
       {/* Project Title and Date */}
-      <motion.div
-        className="mb-12"
-        initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-      >
+      <div className="mb-12">
         <h1 className="text-base text-foreground mb-1">{project.title}</h1>
         {project.publishedAt && (
           <p className="text-base text-secondary-foreground">
             {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(2, "0")}.${new Date(project.publishedAt).getFullYear()}`}
           </p>
         )}
-      </motion.div>
+      </div>
 
       {/* Hero Image */}
       {project.heroImage && typeof project.heroImage !== "string" && (
-        <motion.div
-          className="relative w-full h-[200px] md:h-[400px] rounded-xl shadow-sm overflow-hidden mb-8"
-          initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
-        >
+        <div className="relative w-full h-[200px] md:h-[400px] rounded-xl shadow-sm overflow-hidden mb-8">
           <ImageZoom className="relative w-full h-full">
             <Image
               src={getMediaUrl(project.heroImage)}
@@ -52,7 +41,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
             />
           </ImageZoom>
-        </motion.div>
+        </div>
       )}
 
       {/* Content Sections */}
@@ -95,13 +84,9 @@ function ProjectSectionComponent({
   const sectionId = generateSectionId(section.sectionTitle);
 
   return (
-    <motion.section
+    <section
       id={sectionId}
       className="space-y-6 scroll-mt-24"
-      initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeInOut" }}
     >
       {/* Section Title */}
       <h2 className="text-lg font-newsreader italic text-secondary-foreground my-2">
@@ -140,7 +125,7 @@ function ProjectSectionComponent({
             })}
           </div>
         )}
-    </motion.section>
+    </section>
   );
 }
 
