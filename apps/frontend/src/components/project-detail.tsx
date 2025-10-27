@@ -12,6 +12,11 @@ interface ProjectDetailProps {
 }
 
 export function ProjectDetail({ project }: ProjectDetailProps) {
+  // Add safety checks for mobile
+  if (!project || !project.title) {
+    return null;
+  }
+
   return (
     <div className="w-full max-w-xs md:max-w-2xl mx-auto">
       {/* Project Title and Date */}
@@ -22,40 +27,49 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <h1 className="text-base text-foreground mb-1">{project.title}</h1>
-        <p className="text-base text-secondary-foreground">
-          {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(2, "0")}.${new Date(project.publishedAt).getFullYear()}`}
-        </p>
+        {project.publishedAt && (
+          <p className="text-base text-secondary-foreground">
+            {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(2, "0")}.${new Date(project.publishedAt).getFullYear()}`}
+          </p>
+        )}
       </motion.div>
 
       {/* Hero Image */}
-      <motion.div
-        className="relative w-full h-[200px] md:h-[400px] rounded-xl shadow-sm overflow-hidden mb-8"
-        initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
-      >
-        <ImageZoom className="relative w-full h-full">
-          <Image
-            src={getMediaUrl(project.heroImage)}
-            alt={project.heroImage.alt || project.title}
-            fill
-            className="object-cover rounded-xl"
-            priority
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-          />
-        </ImageZoom>
-      </motion.div>
+      {project.heroImage && typeof project.heroImage !== 'string' && (
+        <motion.div
+          className="relative w-full h-[200px] md:h-[400px] rounded-xl shadow-sm overflow-hidden mb-8"
+          initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
+        >
+          <ImageZoom className="relative w-full h-full">
+            <Image
+              src={getMediaUrl(project.heroImage)}
+              alt={project.heroImage.alt || project.title}
+              fill
+              className="object-cover rounded-xl"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+            />
+          </ImageZoom>
+        </motion.div>
+      )}
 
       {/* Content Sections */}
-      {project.sections && project.sections.length > 0 && (
+      {project.sections && Array.isArray(project.sections) && project.sections.length > 0 && (
         <div className="space-y-16">
-          {project.sections.map((section, index) => (
-            <ProjectSectionComponent
-              key={section.id || index}
-              section={section}
-              index={index}
-            />
-          ))}
+          {project.sections.map((section, index) => {
+            // Safety check for each section
+            if (!section || !section.sectionTitle) return null;
+            
+            return (
+              <ProjectSectionComponent
+                key={section.id || `section-${index}`}
+                section={section}
+                index={index}
+              />
+            );
+          })}
         </div>
       )}
     </div>
@@ -71,6 +85,11 @@ function ProjectSectionComponent({
   section,
   index,
 }: ProjectSectionComponentProps) {
+  // Safety checks
+  if (!section || !section.sectionTitle) {
+    return null;
+  }
+
   const sectionId = generateSectionId(section.sectionTitle);
 
   return (
@@ -88,14 +107,18 @@ function ProjectSectionComponent({
       </h2>
 
       {/* Rich Text Content */}
-      <div className="prose prose-lg dark:prose-invert max-w-none text-secondary-foreground ">
-        <RichTextRenderer content={section.textBody} />
-      </div>
+      {section.textBody && (
+        <div className="prose prose-lg dark:prose-invert max-w-none text-secondary-foreground ">
+          <RichTextRenderer content={section.textBody} />
+        </div>
+      )}
 
       {/* Media Gallery */}
-      {section.media && section.media.length > 0 && (
+      {section.media && Array.isArray(section.media) && section.media.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {section.media.map((mediaItem, mediaIndex) => {
+            if (!mediaItem) return null;
+            
             const media =
               typeof mediaItem.mediaItem === "string"
                 ? null
@@ -105,7 +128,7 @@ function ProjectSectionComponent({
 
             return (
               <MediaItem
-                key={mediaItem.id || mediaIndex}
+                key={mediaItem.id || `media-${mediaIndex}`}
                 media={media}
                 caption={mediaItem.caption}
               />
@@ -160,73 +183,103 @@ interface RichTextRendererProps {
 }
 
 function RichTextRenderer({ content }: RichTextRendererProps) {
-  if (!content || !content.root) {
+  // Enhanced safety checks
+  if (!content || typeof content !== 'object') {
+    return null;
+  }
+
+  if (!content.root || typeof content.root !== 'object') {
     return null;
   }
 
   const renderNode = (node: any): React.ReactNode => {
-    if (!node) return null;
+    // More defensive checking
+    if (!node || typeof node !== 'object') return null;
 
-    // Handle text nodes
-    if (node.type === "text") {
-      const text = node.text;
+    try {
+      // Handle text nodes
+      if (node.type === "text") {
+        const text = node.text;
 
-      // Return empty string for empty text nodes instead of null
-      if (!text) return "";
+        // Return empty string for empty text nodes
+        if (!text || typeof text !== 'string') return "";
 
-      // Apply formatting - fixed to avoid nested React element issues
-      let formattedText: React.ReactNode = text;
-      
-      if (node.format) {
-        if (node.format & 4) formattedText = <u>{formattedText}</u>; // Underline
-        if (node.format & 2) formattedText = <em>{formattedText}</em>; // Italic
-        if (node.format & 1) formattedText = <strong>{formattedText}</strong>; // Bold
+        // Apply formatting safely - avoid nested React element issues
+        let formattedText: React.ReactNode = text;
+
+        if (node.format && typeof node.format === 'number') {
+          if (node.format & 4) formattedText = <u key="u">{formattedText}</u>; // Underline
+          if (node.format & 2) formattedText = <em key="em">{formattedText}</em>; // Italic
+          if (node.format & 1) formattedText = <strong key="strong">{formattedText}</strong>; // Bold
+        }
+
+        return formattedText;
       }
-
-      return formattedText;
+    } catch (error) {
+      console.error('Error rendering text node:', error);
+      return null;
     }
 
-    // Handle element nodes
-    const children = node.children?.map((child: any, index: number) => (
-      <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
-    ));
+    // Handle element nodes with safety checks
+    let children: React.ReactNode[] = [];
+    
+    try {
+      if (node.children && Array.isArray(node.children)) {
+        children = node.children
+          .map((child: any, index: number) => renderNode(child))
+          .filter(Boolean); // Remove null/undefined elements
+      }
+    } catch (error) {
+      console.error('Error rendering children:', error);
+      return null;
+    }
 
-    switch (node.type) {
-      case "paragraph":
-        // Render empty paragraphs to preserve spacing
-        return <p>{children && children.length > 0 ? children : <br />}</p>;
-      case "heading":
-        const HeadingTag = `h${node.tag}` as keyof React.JSX.IntrinsicElements;
-        return React.createElement(HeadingTag, {}, children);
-      case "list":
-        return node.listType === "bullet" ? (
-          <ul>{children}</ul>
-        ) : (
-          <ol>{children}</ol>
-        );
-      case "listitem":
-        return <li>{children}</li>;
-      case "quote":
-        return <blockquote>{children}</blockquote>;
-      case "link":
-        return (
-          <a
-            href={node.fields?.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:decoration-foreground transition-all"
-          >
-            {children}
-          </a>
-        );
-      case "linebreak":
-        return <br />;
-      default:
-        return <>{children}</>;
+    try {
+      switch (node.type) {
+        case "paragraph":
+          // Render empty paragraphs to preserve spacing
+          return <p>{children && children.length > 0 ? children : <br />}</p>;
+        case "heading":
+          const HeadingTag = `h${node.tag}` as keyof React.JSX.IntrinsicElements;
+          return React.createElement(HeadingTag, {}, children);
+        case "list":
+          return node.listType === "bullet" ? (
+            <ul>{children}</ul>
+          ) : (
+            <ol>{children}</ol>
+          );
+        case "listitem":
+          return <li>{children}</li>;
+        case "quote":
+          return <blockquote>{children}</blockquote>;
+        case "link":
+          return (
+            <a
+              href={node.fields?.url || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:decoration-foreground transition-all"
+            >
+              {children}
+            </a>
+          );
+        case "linebreak":
+          return <br />;
+        default:
+          return <>{children}</>;
+      }
+    } catch (error) {
+      console.error('Error rendering node type:', node.type, error);
+      return null;
     }
   };
 
-  return <>{renderNode(content.root)}</>;
+  try {
+    return <>{renderNode(content.root)}</>;
+  } catch (error) {
+    console.error('Fatal error in RichTextRenderer:', error);
+    return null;
+  }
 }
 
 // Helper function to generate section IDs from titles
