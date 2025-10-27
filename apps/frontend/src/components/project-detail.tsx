@@ -34,21 +34,9 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
       >
-          {/* Desktop: Show with ImageZoom, Mobile: Show without */}
-          <div className="hidden md:block">
-            <ImageZoom className="relative w-full h-full">
-              <Image
-                src={getMediaUrl(project.heroImage)}
-                alt={project.heroImage.alt || project.title}
-                fill
-                className="object-cover rounded-xl"
-                priority
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                quality={75}
-              />
-            </ImageZoom>
-          </div>
-          <div className="block md:hidden">
+        {/* Desktop: Show with ImageZoom, Mobile: Show without */}
+        <div className="hidden md:block absolute inset-0">
+          <ImageZoom className="relative w-full h-full">
             <Image
               src={getMediaUrl(project.heroImage)}
               alt={project.heroImage.alt || project.title}
@@ -58,7 +46,19 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
               quality={75}
             />
-          </div>
+          </ImageZoom>
+        </div>
+        <div className="block md:hidden absolute inset-0">
+          <Image
+            src={getMediaUrl(project.heroImage)}
+            alt={project.heroImage.alt || project.title}
+            fill
+            className="object-cover rounded-xl"
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+            quality={75}
+          />
+        </div>
       </motion.div>
 
       {/* Content Sections */}
@@ -153,9 +153,9 @@ function MediaItem({ media, caption }: MediaItemProps) {
             Your browser does not support the video tag.
           </video>
         ) : isImage(media) ? (
-          <>
+          <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
             {/* Desktop: Show with ImageZoom */}
-            <div className="hidden md:block relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
+            <div className="hidden md:block absolute inset-0">
               <ImageZoom className="relative w-full h-full">
                 <Image
                   src={getMediaUrl(media, "medium")}
@@ -178,7 +178,7 @@ function MediaItem({ media, caption }: MediaItemProps) {
               </ImageZoom>
             </div>
             {/* Mobile: Show without ImageZoom */}
-            <div className="block md:hidden relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
+            <div className="block md:hidden absolute inset-0">
               <Image
                 src={getMediaUrl(media, "medium")}
                 alt={media.alt || caption || "Project media"}
@@ -198,7 +198,7 @@ function MediaItem({ media, caption }: MediaItemProps) {
                 }}
               />
             </div>
-          </>
+          </div>
         ) : null}
 
         {caption && (
