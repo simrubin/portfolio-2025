@@ -169,19 +169,21 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
 
     // Handle text nodes
     if (node.type === "text") {
-      let text = node.text;
+      const text = node.text;
 
       // Return empty string for empty text nodes instead of null
       if (!text) return "";
 
-      // Apply formatting
+      // Apply formatting - fixed to avoid nested React element issues
+      let formattedText: React.ReactNode = text;
+      
       if (node.format) {
-        if (node.format & 1) text = <strong key={node.text}>{text}</strong>; // Bold
-        if (node.format & 2) text = <em key={node.text}>{text}</em>; // Italic
-        if (node.format & 4) text = <u key={node.text}>{text}</u>; // Underline
+        if (node.format & 4) formattedText = <u>{formattedText}</u>; // Underline
+        if (node.format & 2) formattedText = <em>{formattedText}</em>; // Italic
+        if (node.format & 1) formattedText = <strong>{formattedText}</strong>; // Bold
       }
 
-      return text;
+      return formattedText;
     }
 
     // Handle element nodes
