@@ -125,7 +125,7 @@ interface MediaItemProps {
 function MediaItem({ media, caption }: MediaItemProps) {
   try {
     const mediaUrl = getMediaUrl(media);
-    
+
     return (
       <div className="space-y-2">
         {isVideo(media) ? (
@@ -141,15 +141,18 @@ function MediaItem({ media, caption }: MediaItemProps) {
           <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
             <ImageZoom className="relative w-full h-full">
               <Image
-                src={mediaUrl}
+                src={getMediaUrl(media, "medium")}
                 alt={media.alt || caption || "Project media"}
                 fill
                 className="object-cover rounded-lg"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 loading="lazy"
+                quality={85}
                 onError={(e) => {
-                  console.error('Image failed to load:', mediaUrl, media);
-                  e.currentTarget.src = '/placeholder.jpg';
+                  console.error("Image failed to load, falling back to original:", mediaUrl, media);
+                  // Fallback to original if medium size not available
+                  const originalUrl = getMediaUrl(media);
+                  e.currentTarget.src = originalUrl;
                 }}
               />
             </ImageZoom>
@@ -162,7 +165,7 @@ function MediaItem({ media, caption }: MediaItemProps) {
       </div>
     );
   } catch (error) {
-    console.error('Error rendering media item:', error, media);
+    console.error("Error rendering media item:", error, media);
     return <div className="text-red-500">Error loading media</div>;
   }
 }
