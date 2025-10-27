@@ -84,10 +84,7 @@ function ProjectSectionComponent({
   const sectionId = generateSectionId(section.sectionTitle);
 
   return (
-    <section
-      id={sectionId}
-      className="space-y-6 scroll-mt-24"
-    >
+    <section id={sectionId} className="space-y-6 scroll-mt-24">
       {/* Section Title */}
       <h2 className="text-lg font-newsreader italic text-secondary-foreground my-2">
         {section.sectionTitle}
@@ -181,97 +178,24 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
     return null;
   }
 
-  const renderNode = (node: any): React.ReactNode => {
-    // More defensive checking
-    if (!node || typeof node !== "object") return null;
+  // SIMPLIFIED VERSION - Only extract text, no formatting
+  const extractText = (node: any): string => {
+    if (!node || typeof node !== "object") return "";
 
-    try {
-      // Handle text nodes
-      if (node.type === "text") {
-        const text = node.text;
-
-        // Return empty string for empty text nodes
-        if (!text || typeof text !== "string") return "";
-
-        // Apply formatting safely - avoid nested React element issues
-        let formattedText: React.ReactNode = text;
-
-        if (node.format && typeof node.format === "number") {
-          if (node.format & 4) formattedText = <u key="u">{formattedText}</u>; // Underline
-          if (node.format & 2)
-            formattedText = <em key="em">{formattedText}</em>; // Italic
-          if (node.format & 1)
-            formattedText = <strong key="strong">{formattedText}</strong>; // Bold
-        }
-
-        return formattedText;
-      }
-    } catch (error) {
-      console.error("Error rendering text node:", error);
-      return null;
+    if (node.type === "text" && typeof node.text === "string") {
+      return node.text;
     }
 
-    // Handle element nodes with safety checks
-    let children: React.ReactNode[] = [];
-
-    try {
-      if (node.children && Array.isArray(node.children)) {
-        children = node.children
-          .map((child: any, index: number) => renderNode(child))
-          .filter(Boolean); // Remove null/undefined elements
-      }
-    } catch (error) {
-      console.error("Error rendering children:", error);
-      return null;
+    if (node.children && Array.isArray(node.children)) {
+      return node.children.map(extractText).join(" ");
     }
 
-    try {
-      switch (node.type) {
-        case "paragraph":
-          // Render empty paragraphs to preserve spacing
-          return <p>{children && children.length > 0 ? children : <br />}</p>;
-        case "heading":
-          const HeadingTag =
-            `h${node.tag}` as keyof React.JSX.IntrinsicElements;
-          return React.createElement(HeadingTag, {}, children);
-        case "list":
-          return node.listType === "bullet" ? (
-            <ul>{children}</ul>
-          ) : (
-            <ol>{children}</ol>
-          );
-        case "listitem":
-          return <li>{children}</li>;
-        case "quote":
-          return <blockquote>{children}</blockquote>;
-        case "link":
-          return (
-            <a
-              href={node.fields?.url || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:decoration-foreground transition-all"
-            >
-              {children}
-            </a>
-          );
-        case "linebreak":
-          return <br />;
-        default:
-          return <>{children}</>;
-      }
-    } catch (error) {
-      console.error("Error rendering node type:", node.type, error);
-      return null;
-    }
+    return "";
   };
 
-  try {
-    return <>{renderNode(content.root)}</>;
-  } catch (error) {
-    console.error("Fatal error in RichTextRenderer:", error);
-    return null;
-  }
+  const textContent = extractText(content.root);
+
+  return <p>{textContent}</p>;
 }
 
 // Helper function to generate section IDs from titles
