@@ -3,7 +3,7 @@
 A modern, CMS-powered portfolio website built with Next.js and Payload CMS. This monorepo project features a beautiful, animated frontend with a headless CMS backend for easy content management.
 
 🌐 **Live Site**: [www.simeonrubin.com](https://www.simeonrubin.com)  
-🛠️ **CMS Admin**: [cms.simeonrubin.com/admin](https://cms.simeonrubin.com/admin)
+🛠️ **CMS Admin**: 
 
 ## ✨ Features
 
@@ -187,7 +187,7 @@ This flexible structure allows for:
 This project is deployed on Vercel as two separate applications:
 
 - **Frontend**: www.simeonrubin.com
-- **CMS**: cms.simeonrubin.com
+- **CMS**
 
 For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
@@ -207,7 +207,7 @@ npm run start:cms
 
 ### Adding a New Project
 
-1. Log in to CMS admin: `https://cms.simeonrubin.com/admin`
+1. Log in to CMS admin
 2. Click "Projects" → "Create New"
 3. Fill in the required fields:
    - Title
