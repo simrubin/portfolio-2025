@@ -34,8 +34,9 @@ export const ImageZoom = ({
     <Zoom
       classDialog={cn(
         "[&::backdrop]:hidden",
-        "[&[open]]:fixed [&[open]]:m-0 [&[open]]:inset-0 [&[open]]:h-[100vh] [&[open]]:min-h-[100dvh] [&[open]]:w-full [&[open]]:max-w-none [&[open]]:overflow-hidden [&[open]]:border-0 [&[open]]:bg-transparent [&[open]]:p-0",
-        "[&_[data-rmiz-modal-overlay]]:fixed [&_[data-rmiz-modal-overlay]]:inset-0 [&_[data-rmiz-modal-overlay]]:top-0 [&_[data-rmiz-modal-overlay]]:left-0 [&_[data-rmiz-modal-overlay]]:right-0 [&_[data-rmiz-modal-overlay]]:bottom-0 [&_[data-rmiz-modal-overlay]]:transition-all [&_[data-rmiz-modal-overlay]]:ease-in-out [&_[data-rmiz-modal-overlay]]:duration-300",
+        "[&[open]]:fixed [&[open]]:m-0 [&[open]]:inset-0 [&[open]]:top-0 [&[open]]:left-0 [&[open]]:right-0 [&[open]]:bottom-0 [&[open]]:w-full [&[open]]:max-w-none [&[open]]:overflow-hidden [&[open]]:border-0 [&[open]]:bg-transparent [&[open]]:p-0",
+        "[&[open]]:h-[100vh] [&[open]]:h-[100dvh] [&[open]]:min-h-[100vh] [&[open]]:min-h-[100dvh]",
+        "[&_[data-rmiz-modal-overlay]]:fixed [&_[data-rmiz-modal-overlay]]:inset-0 [&_[data-rmiz-modal-overlay]]:top-[env(safe-area-inset-top)] [&_[data-rmiz-modal-overlay]]:left-0 [&_[data-rmiz-modal-overlay]]:right-0 [&_[data-rmiz-modal-overlay]]:bottom-[env(safe-area-inset-bottom)] [&_[data-rmiz-modal-overlay]]:transition-all [&_[data-rmiz-modal-overlay]]:ease-in-out [&_[data-rmiz-modal-overlay]]:duration-300",
         '[&_[data-rmiz-modal-overlay="hidden"]]:bg-transparent',
         '[&_[data-rmiz-modal-overlay="visible"]]:backdrop-blur-md [&_[data-rmiz-modal-overlay="visible"]]:bg-white/40',
         'dark:[&_[data-rmiz-modal-overlay="visible"]]:!bg-black/70',
