@@ -34,16 +34,16 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
       >
-          <ImageZoom className="relative w-full h-full">
-            <Image
-              src={getMediaUrl(project.heroImage)}
-              alt={project.heroImage.alt || project.title}
-              fill
-              className="object-cover rounded-xl"
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-            />
-          </ImageZoom>
+        <ImageZoom className="relative w-full h-full">
+          <Image
+            src={getMediaUrl(project.heroImage)}
+            alt={project.heroImage.alt || project.title}
+            fill
+            className="object-cover rounded-xl"
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+          />
+        </ImageZoom>
       </motion.div>
 
       {/* Content Sections */}

@@ -72,7 +72,10 @@ export async function getProjectBySlug(
 /**
  * Get the full URL for a media item, with optional size variant
  */
-export function getMediaUrl(media: Media | string, size?: 'thumbnail' | 'square' | 'small' | 'medium' | 'large' | 'xlarge'): string {
+export function getMediaUrl(
+  media: Media | string,
+  size?: "thumbnail" | "square" | "small" | "medium" | "large" | "xlarge"
+): string {
   if (typeof media === "string") {
     // If it's just an ID, construct the URL
     return `${CMS_URL}/api/media/file/${media}`;
@@ -81,7 +84,7 @@ export function getMediaUrl(media: Media | string, size?: 'thumbnail' | 'square'
   // Try to use size variant if requested
   if (size && media[`sizes_${size}_url` as keyof Media]) {
     const sizeUrl = media[`sizes_${size}_url` as keyof Media];
-    if (typeof sizeUrl === 'string' && sizeUrl) {
+    if (typeof sizeUrl === "string" && sizeUrl) {
       if (sizeUrl.startsWith("http")) {
         return sizeUrl;
       }
