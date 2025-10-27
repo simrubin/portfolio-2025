@@ -35,7 +35,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       </motion.div>
 
       {/* Hero Image */}
-      {project.heroImage && typeof project.heroImage !== 'string' && (
+      {project.heroImage && typeof project.heroImage !== "string" && (
         <motion.div
           className="relative w-full h-[200px] md:h-[400px] rounded-xl shadow-sm overflow-hidden mb-8"
           initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
@@ -56,22 +56,24 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       )}
 
       {/* Content Sections */}
-      {project.sections && Array.isArray(project.sections) && project.sections.length > 0 && (
-        <div className="space-y-16">
-          {project.sections.map((section, index) => {
-            // Safety check for each section
-            if (!section || !section.sectionTitle) return null;
-            
-            return (
-              <ProjectSectionComponent
-                key={section.id || `section-${index}`}
-                section={section}
-                index={index}
-              />
-            );
-          })}
-        </div>
-      )}
+      {project.sections &&
+        Array.isArray(project.sections) &&
+        project.sections.length > 0 && (
+          <div className="space-y-16">
+            {project.sections.map((section, index) => {
+              // Safety check for each section
+              if (!section || !section.sectionTitle) return null;
+
+              return (
+                <ProjectSectionComponent
+                  key={section.id || `section-${index}`}
+                  section={section}
+                  index={index}
+                />
+              );
+            })}
+          </div>
+        )}
     </div>
   );
 }
@@ -114,28 +116,30 @@ function ProjectSectionComponent({
       )}
 
       {/* Media Gallery */}
-      {section.media && Array.isArray(section.media) && section.media.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          {section.media.map((mediaItem, mediaIndex) => {
-            if (!mediaItem) return null;
-            
-            const media =
-              typeof mediaItem.mediaItem === "string"
-                ? null
-                : mediaItem.mediaItem;
+      {section.media &&
+        Array.isArray(section.media) &&
+        section.media.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            {section.media.map((mediaItem, mediaIndex) => {
+              if (!mediaItem) return null;
 
-            if (!media) return null;
+              const media =
+                typeof mediaItem.mediaItem === "string"
+                  ? null
+                  : mediaItem.mediaItem;
 
-            return (
-              <MediaItem
-                key={mediaItem.id || `media-${mediaIndex}`}
-                media={media}
-                caption={mediaItem.caption}
-              />
-            );
-          })}
-        </div>
-      )}
+              if (!media) return null;
+
+              return (
+                <MediaItem
+                  key={mediaItem.id || `media-${mediaIndex}`}
+                  media={media}
+                  caption={mediaItem.caption}
+                />
+              );
+            })}
+          </div>
+        )}
     </motion.section>
   );
 }
@@ -184,17 +188,17 @@ interface RichTextRendererProps {
 
 function RichTextRenderer({ content }: RichTextRendererProps) {
   // Enhanced safety checks
-  if (!content || typeof content !== 'object') {
+  if (!content || typeof content !== "object") {
     return null;
   }
 
-  if (!content.root || typeof content.root !== 'object') {
+  if (!content.root || typeof content.root !== "object") {
     return null;
   }
 
   const renderNode = (node: any): React.ReactNode => {
     // More defensive checking
-    if (!node || typeof node !== 'object') return null;
+    if (!node || typeof node !== "object") return null;
 
     try {
       // Handle text nodes
@@ -202,27 +206,29 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
         const text = node.text;
 
         // Return empty string for empty text nodes
-        if (!text || typeof text !== 'string') return "";
+        if (!text || typeof text !== "string") return "";
 
         // Apply formatting safely - avoid nested React element issues
         let formattedText: React.ReactNode = text;
 
-        if (node.format && typeof node.format === 'number') {
+        if (node.format && typeof node.format === "number") {
           if (node.format & 4) formattedText = <u key="u">{formattedText}</u>; // Underline
-          if (node.format & 2) formattedText = <em key="em">{formattedText}</em>; // Italic
-          if (node.format & 1) formattedText = <strong key="strong">{formattedText}</strong>; // Bold
+          if (node.format & 2)
+            formattedText = <em key="em">{formattedText}</em>; // Italic
+          if (node.format & 1)
+            formattedText = <strong key="strong">{formattedText}</strong>; // Bold
         }
 
         return formattedText;
       }
     } catch (error) {
-      console.error('Error rendering text node:', error);
+      console.error("Error rendering text node:", error);
       return null;
     }
 
     // Handle element nodes with safety checks
     let children: React.ReactNode[] = [];
-    
+
     try {
       if (node.children && Array.isArray(node.children)) {
         children = node.children
@@ -230,7 +236,7 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
           .filter(Boolean); // Remove null/undefined elements
       }
     } catch (error) {
-      console.error('Error rendering children:', error);
+      console.error("Error rendering children:", error);
       return null;
     }
 
@@ -240,7 +246,8 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
           // Render empty paragraphs to preserve spacing
           return <p>{children && children.length > 0 ? children : <br />}</p>;
         case "heading":
-          const HeadingTag = `h${node.tag}` as keyof React.JSX.IntrinsicElements;
+          const HeadingTag =
+            `h${node.tag}` as keyof React.JSX.IntrinsicElements;
           return React.createElement(HeadingTag, {}, children);
         case "list":
           return node.listType === "bullet" ? (
@@ -269,7 +276,7 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
           return <>{children}</>;
       }
     } catch (error) {
-      console.error('Error rendering node type:', node.type, error);
+      console.error("Error rendering node type:", node.type, error);
       return null;
     }
   };
@@ -277,7 +284,7 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
   try {
     return <>{renderNode(content.root)}</>;
   } catch (error) {
-    console.error('Fatal error in RichTextRenderer:', error);
+    console.error("Fatal error in RichTextRenderer:", error);
     return null;
   }
 }
