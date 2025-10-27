@@ -34,15 +34,31 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
       >
-          <Image
-            src={getMediaUrl(project.heroImage)}
-            alt={project.heroImage.alt || project.title}
-            fill
-            className="object-cover rounded-xl"
-            priority
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-            quality={75}
-          />
+          {/* Desktop: Show with ImageZoom, Mobile: Show without */}
+          <div className="hidden md:block">
+            <ImageZoom className="relative w-full h-full">
+              <Image
+                src={getMediaUrl(project.heroImage)}
+                alt={project.heroImage.alt || project.title}
+                fill
+                className="object-cover rounded-xl"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                quality={75}
+              />
+            </ImageZoom>
+          </div>
+          <div className="block md:hidden">
+            <Image
+              src={getMediaUrl(project.heroImage)}
+              alt={project.heroImage.alt || project.title}
+              fill
+              className="object-cover rounded-xl"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+              quality={75}
+            />
+          </div>
       </motion.div>
 
       {/* Content Sections */}
@@ -137,27 +153,52 @@ function MediaItem({ media, caption }: MediaItemProps) {
             Your browser does not support the video tag.
           </video>
         ) : isImage(media) ? (
-          <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
-            <Image
-              src={getMediaUrl(media, "medium")}
-              alt={media.alt || caption || "Project media"}
-              fill
-              className="object-cover rounded-lg"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              loading="lazy"
-              quality={75}
-              onError={(e) => {
-                console.error(
-                  "Image failed to load, falling back to original:",
-                  mediaUrl,
-                  media
-                );
-                // Fallback to original if medium size not available
-                const originalUrl = getMediaUrl(media);
-                e.currentTarget.src = originalUrl;
-              }}
-            />
-          </div>
+          <>
+            {/* Desktop: Show with ImageZoom */}
+            <div className="hidden md:block relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
+              <ImageZoom className="relative w-full h-full">
+                <Image
+                  src={getMediaUrl(media, "medium")}
+                  alt={media.alt || caption || "Project media"}
+                  fill
+                  className="object-cover rounded-lg"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  loading="lazy"
+                  quality={75}
+                  onError={(e) => {
+                    console.error(
+                      "Image failed to load, falling back to original:",
+                      mediaUrl,
+                      media
+                    );
+                    const originalUrl = getMediaUrl(media);
+                    e.currentTarget.src = originalUrl;
+                  }}
+                />
+              </ImageZoom>
+            </div>
+            {/* Mobile: Show without ImageZoom */}
+            <div className="block md:hidden relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
+              <Image
+                src={getMediaUrl(media, "medium")}
+                alt={media.alt || caption || "Project media"}
+                fill
+                className="object-cover rounded-lg"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                loading="lazy"
+                quality={75}
+                onError={(e) => {
+                  console.error(
+                    "Image failed to load, falling back to original:",
+                    mediaUrl,
+                    media
+                  );
+                  const originalUrl = getMediaUrl(media);
+                  e.currentTarget.src = originalUrl;
+                }}
+              />
+            </div>
+          </>
         ) : null}
 
         {caption && (
