@@ -5,18 +5,13 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import type { ProjectResponse, ProjectSection, Media } from "@/types/payload";
 import { getMediaUrl, isVideo, isImage } from "@/lib/payload";
-// import { ImageZoom } from "@/components/kibo-ui/image-zoom"; // TEMPORARILY DISABLED FOR MOBILE DEBUG
+import { ImageZoom } from "@/components/kibo-ui/image-zoom";
 
 interface ProjectDetailProps {
   project: ProjectResponse;
 }
 
 export function ProjectDetail({ project }: ProjectDetailProps) {
-  // Add safety checks for mobile
-  if (!project || !project.title) {
-    return null;
-  }
-
   return (
     <div className="w-full max-w-xs md:max-w-2xl mx-auto">
       {/* Project Title and Date */}
@@ -27,21 +22,19 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <h1 className="text-base text-foreground mb-1">{project.title}</h1>
-        {project.publishedAt && (
-          <p className="text-base text-secondary-foreground">
-            {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(2, "0")}.${new Date(project.publishedAt).getFullYear()}`}
-          </p>
-        )}
+        <p className="text-base text-secondary-foreground">
+          {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(2, "0")}.${new Date(project.publishedAt).getFullYear()}`}
+        </p>
       </motion.div>
 
       {/* Hero Image */}
-      {project.heroImage && typeof project.heroImage !== "string" && (
-        <motion.div
-          className="relative w-full h-[200px] md:h-[400px] rounded-xl shadow-sm overflow-hidden mb-8"
-          initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
-        >
+      <motion.div
+        className="relative w-full h-[200px] md:h-[400px] rounded-xl shadow-sm overflow-hidden mb-8"
+        initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
+      >
+        <ImageZoom className="relative w-full h-full">
           <Image
             src={getMediaUrl(project.heroImage)}
             alt={project.heroImage.alt || project.title}
@@ -50,28 +43,21 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             priority
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
           />
-        </motion.div>
-      )}
+        </ImageZoom>
+      </motion.div>
 
       {/* Content Sections */}
-      {project.sections &&
-        Array.isArray(project.sections) &&
-        project.sections.length > 0 && (
-          <div className="space-y-16">
-            {project.sections.map((section, index) => {
-              // Safety check for each section
-              if (!section || !section.sectionTitle) return null;
-
-              return (
-                <ProjectSectionComponent
-                  key={section.id || `section-${index}`}
-                  section={section}
-                  index={index}
-                />
-              );
-            })}
-          </div>
-        )}
+      {project.sections && project.sections.length > 0 && (
+        <div className="space-y-16">
+          {project.sections.map((section, index) => (
+            <ProjectSectionComponent
+              key={section.id || index}
+              section={section}
+              index={index}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -85,11 +71,6 @@ function ProjectSectionComponent({
   section,
   index,
 }: ProjectSectionComponentProps) {
-  // Safety checks
-  if (!section || !section.sectionTitle) {
-    return null;
-  }
-
   const sectionId = generateSectionId(section.sectionTitle);
 
   return (
@@ -107,37 +88,31 @@ function ProjectSectionComponent({
       </h2>
 
       {/* Rich Text Content */}
-      {section.textBody && (
-        <div className="prose prose-lg dark:prose-invert max-w-none text-secondary-foreground ">
-          <RichTextRenderer content={section.textBody} />
-        </div>
-      )}
+      <div className="prose prose-lg dark:prose-invert max-w-none text-secondary-foreground ">
+        <RichTextRenderer content={section.textBody} />
+      </div>
 
       {/* Media Gallery */}
-      {section.media &&
-        Array.isArray(section.media) &&
-        section.media.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            {section.media.map((mediaItem, mediaIndex) => {
-              if (!mediaItem) return null;
+      {section.media && section.media.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          {section.media.map((mediaItem, mediaIndex) => {
+            const media =
+              typeof mediaItem.mediaItem === "string"
+                ? null
+                : mediaItem.mediaItem;
 
-              const media =
-                typeof mediaItem.mediaItem === "string"
-                  ? null
-                  : mediaItem.mediaItem;
+            if (!media) return null;
 
-              if (!media) return null;
-
-              return (
-                <MediaItem
-                  key={mediaItem.id || `media-${mediaIndex}`}
-                  media={media}
-                  caption={mediaItem.caption}
-                />
-              );
-            })}
-          </div>
-        )}
+            return (
+              <MediaItem
+                key={mediaItem.id || mediaIndex}
+                media={media}
+                caption={mediaItem.caption}
+              />
+            );
+          })}
+        </div>
+      )}
     </motion.section>
   );
 }
@@ -161,13 +136,15 @@ function MediaItem({ media, caption }: MediaItemProps) {
         </video>
       ) : isImage(media) ? (
         <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
-          <Image
-            src={getMediaUrl(media)}
-            alt={media.alt || caption || "Project media"}
-            fill
-            className="object-cover rounded-lg"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
+          <ImageZoom className="relative w-full h-full">
+            <Image
+              src={getMediaUrl(media)}
+              alt={media.alt || caption || "Project media"}
+              fill
+              className="object-cover rounded-lg"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </ImageZoom>
         </div>
       ) : null}
 
@@ -183,33 +160,73 @@ interface RichTextRendererProps {
 }
 
 function RichTextRenderer({ content }: RichTextRendererProps) {
-  // Enhanced safety checks
-  if (!content || typeof content !== "object") {
+  if (!content || !content.root) {
     return null;
   }
 
-  if (!content.root || typeof content.root !== "object") {
-    return null;
-  }
+  const renderNode = (node: any): React.ReactNode => {
+    if (!node) return null;
 
-  // SIMPLIFIED VERSION - Only extract text, no formatting
-  const extractText = (node: any): string => {
-    if (!node || typeof node !== "object") return "";
+    // Handle text nodes
+    if (node.type === "text") {
+      const text = node.text;
 
-    if (node.type === "text" && typeof node.text === "string") {
-      return node.text;
+      // Return empty string for empty text nodes instead of null
+      if (!text) return "";
+
+      // Apply formatting - fixed to avoid nested React element issues
+      let formattedText: React.ReactNode = text;
+      
+      if (node.format) {
+        if (node.format & 4) formattedText = <u>{formattedText}</u>; // Underline
+        if (node.format & 2) formattedText = <em>{formattedText}</em>; // Italic
+        if (node.format & 1) formattedText = <strong>{formattedText}</strong>; // Bold
+      }
+
+      return formattedText;
     }
 
-    if (node.children && Array.isArray(node.children)) {
-      return node.children.map(extractText).join(" ");
-    }
+    // Handle element nodes
+    const children = node.children?.map((child: any, index: number) => (
+      <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
+    ));
 
-    return "";
+    switch (node.type) {
+      case "paragraph":
+        // Render empty paragraphs to preserve spacing
+        return <p>{children && children.length > 0 ? children : <br />}</p>;
+      case "heading":
+        const HeadingTag = `h${node.tag}` as keyof React.JSX.IntrinsicElements;
+        return React.createElement(HeadingTag, {}, children);
+      case "list":
+        return node.listType === "bullet" ? (
+          <ul>{children}</ul>
+        ) : (
+          <ol>{children}</ol>
+        );
+      case "listitem":
+        return <li>{children}</li>;
+      case "quote":
+        return <blockquote>{children}</blockquote>;
+      case "link":
+        return (
+          <a
+            href={node.fields?.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:decoration-foreground transition-all"
+          >
+            {children}
+          </a>
+        );
+      case "linebreak":
+        return <br />;
+      default:
+        return <>{children}</>;
+    }
   };
 
-  const textContent = extractText(content.root);
-
-  return <p>{textContent}</p>;
+  return <>{renderNode(content.root)}</>;
 }
 
 // Helper function to generate section IDs from titles

@@ -8,7 +8,6 @@ import {
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/payload";
 import type { Metadata } from "next";
 import GradualBlur from "@/components/ui/GradualBlur";
-import { ErrorBoundary } from "@/components/error-boundary";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -75,9 +74,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {/* Mobile Back Button - Top */}
           <AnimatedBackButtonSectionMobile />
 
-          <ErrorBoundary>
-            <ProjectDetail project={project} />
-          </ErrorBoundary>
+          <ProjectDetail project={project} />
         </div>
 
         {/* Table of Contents - Right Side (Desktop) */}
@@ -94,4 +91,4 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 }
 
 // Enable ISR
-export const revalidate = 60;
+export const revalidate = 60; // Revalidate every 60 seconds
