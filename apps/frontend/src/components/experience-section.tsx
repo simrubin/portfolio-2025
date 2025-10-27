@@ -69,36 +69,36 @@ export function ExperienceSection() {
           >
             {/* Left column */}
             <div className="flex flex-col">
-              <h3 className="text-sm md:text-base text-foreground ">
+              <h3 className="text-base text-foreground ">
                 {exp.left.company}
               </h3>
               <div className="flex justify-between items-baseline mb-2">
-                <p className="text-sm md:text-base text-secondary-foreground">
+                <p className="text-base text-secondary-foreground">
                   {exp.left.role}
                 </p>
-                <p className="text-sm md:text-base text-accent-foreground ml-4">
+                <p className="text-base text-accent-foreground ml-4">
                   {exp.left.year}
                 </p>
               </div>
-              <p className="text-sm md:text-base text-secondary-foreground leading-relaxed">
+              <p className="text-base text-secondary-foreground leading-relaxed">
                 {exp.left.description}
               </p>
             </div>
 
             {/* Right column */}
             <div className="flex flex-col">
-              <h3 className="text-sm md:text-base text-foreground ">
+              <h3 className="text-base text-foreground ">
                 {exp.right.company}
               </h3>
               <div className="flex justify-between items-baseline mb-2">
-                <p className="text-sm md:text-base text-secondary-foreground">
+                <p className="text-base text-secondary-foreground">
                   {exp.right.role}
                 </p>
-                <p className="text-sm md:text-base text-accent-foreground ml-4">
+                <p className="text-base text-accent-foreground ml-4">
                   {exp.right.year}
                 </p>
               </div>
-              <p className="text-sm md:text-base text-secondary-foreground leading-relaxed">
+              <p className="text-base text-secondary-foreground leading-relaxed">
                 {exp.right.description}
               </p>
             </div>
