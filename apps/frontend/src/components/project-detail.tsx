@@ -123,37 +123,48 @@ interface MediaItemProps {
 }
 
 function MediaItem({ media, caption }: MediaItemProps) {
-  return (
-    <div className="space-y-2">
-      {isVideo(media) ? (
-        <video
-          src={getMediaUrl(media)}
-          controls
-          className="w-full rounded-lg"
-          preload="none"
-        >
-          Your browser does not support the video tag.
-        </video>
-      ) : isImage(media) ? (
-        <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
-          <ImageZoom className="relative w-full h-full">
-            <Image
-              src={getMediaUrl(media)}
-              alt={media.alt || caption || "Project media"}
-              fill
-              className="object-cover rounded-lg"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              loading="lazy"
-            />
-          </ImageZoom>
-        </div>
-      ) : null}
+  try {
+    const mediaUrl = getMediaUrl(media);
+    
+    return (
+      <div className="space-y-2">
+        {isVideo(media) ? (
+          <video
+            src={mediaUrl}
+            controls
+            className="w-full rounded-lg"
+            preload="none"
+          >
+            Your browser does not support the video tag.
+          </video>
+        ) : isImage(media) ? (
+          <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
+            <ImageZoom className="relative w-full h-full">
+              <Image
+                src={mediaUrl}
+                alt={media.alt || caption || "Project media"}
+                fill
+                className="object-cover rounded-lg"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                loading="lazy"
+                onError={(e) => {
+                  console.error('Image failed to load:', mediaUrl, media);
+                  e.currentTarget.src = '/placeholder.jpg';
+                }}
+              />
+            </ImageZoom>
+          </div>
+        ) : null}
 
-      {caption && (
-        <p className="text-sm text-accent-foreground italic">{caption}</p>
-      )}
-    </div>
-  );
+        {caption && (
+          <p className="text-sm text-accent-foreground italic">{caption}</p>
+        )}
+      </div>
+    );
+  } catch (error) {
+    console.error('Error rendering media item:', error, media);
+    return <div className="text-red-500">Error loading media</div>;
+  }
 }
 
 interface RichTextRendererProps {
