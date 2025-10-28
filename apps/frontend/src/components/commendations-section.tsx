@@ -27,7 +27,7 @@ const awards = [
   },
   {
     title: "Outstanding Project",
-    description: "Creative Interactions and Solutions | Monash University | Faculty of Art, Design and Architecture",
+    description: "Creative Interactions and Solutions | Monash University",
     year: "2024",
   },
 
