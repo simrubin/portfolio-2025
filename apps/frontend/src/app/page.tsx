@@ -4,6 +4,7 @@ import { ReachMeSection } from "@/components/reach-me-section";
 import { ProjectsSection } from "@/components/projects-section";
 import { ExperienceSection } from "@/components/experience-section";
 import GradualBlur from "@/components/ui/GradualBlur";
+import { CommendationsSection } from "@/components/commendations-section";
 
 export default async function Home() {
   return (
@@ -23,6 +24,7 @@ export default async function Home() {
         <ProjectsSection />
         <RightNowSection />
         <ExperienceSection />
+        <CommendationsSection />
         <ReachMeSection />
       </div>
     </>
