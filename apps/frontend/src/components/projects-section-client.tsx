@@ -10,6 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import GradualBlur from "@/components/ui/GradualBlur";
 import { getMediaUrl } from "@/lib/payload";
 import type { Project } from "@/types/payload";
 import { useAnimation } from "@/providers/animation-provider";
@@ -56,8 +57,8 @@ export function ProjectsSectionClient({
           delay: hasPlayedInitialAnimation ? 0 : 2.0,
         }}
       >
-        <ScrollArea className="w-full md:h-[270px]">
-          <div className="flex gap-4 py-4 px-2">
+        <ScrollArea className="w-full -mx-4 md:h-[270px]">
+          <div className="flex gap-4 py-4 px-4">
             {projects.map((project) => {
               const heroImage =
                 typeof project.heroImage === "string"
@@ -98,14 +99,25 @@ export function ProjectsSectionClient({
               );
             })}
           </div>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation="horizontal" className="z-[9999]" />
         </ScrollArea>
 
+        <div className="absolute left-[-36px] top-0 bottom-0 w-6">
+          <GradualBlur preset="left" strength={1} height="10%" width="4rem" />
+        </div>
         {/* Left gradient fade */}
-        <div className="absolute left-0 top-0 bottom-0 w-5 h-36 md:h-65 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+        <div className="absolute left-[-16px] top-0 bottom-0 w-5 h-36 md:h-65 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+
+        <GradualBlur
+          preset="right"
+          strength={1}
+          height="10%"
+          width="4rem"
+          className="right-[16px]"
+        />
 
         {/* Right gradient fade */}
-        <div className="absolute right-0 top-0 bottom-0 w-5 h-36 md:h-65 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+        <div className="absolute right-[16px] top-0 bottom-0 w-5 h-36 md:h-65 bg-gradient-to-l from-background to-transparent pointer-events-none" />
       </motion.div>
     </section>
   );
