@@ -102,11 +102,11 @@ export function ProjectsSectionClient({
           <ScrollBar orientation="horizontal" className="z-[9999]" />
         </ScrollArea>
 
-        <div className="absolute left-[-36px] top-0 bottom-0 w-6">
-          <GradualBlur preset="left" strength={1} height="10%" width="4rem" />
+        <div className="absolute left-[-28px] top-0 bottom-0 w-6">
+          <GradualBlur preset="left" strength={1} height="10%" width="4rem" divCount={4} />
         </div>
         {/* Left gradient fade */}
-        <div className="absolute left-[-16px] top-0 bottom-0 w-5 h-36 md:h-65 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+        <div className="absolute left-[-17px] top-0 bottom-0 w-5 h-36 md:h-65 bg-gradient-to-r from-background to-transparent pointer-events-none" />
 
         <GradualBlur
           preset="right"
@@ -117,7 +117,7 @@ export function ProjectsSectionClient({
         />
 
         {/* Right gradient fade */}
-        <div className="absolute right-[16px] top-0 bottom-0 w-5 h-36 md:h-65 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+        <div className="absolute right-[16px] top-0 bottom-0 w-7 h-36 md:h-65 bg-gradient-to-l from-background to-transparent pointer-events-none" />
       </motion.div>
     </section>
   );
