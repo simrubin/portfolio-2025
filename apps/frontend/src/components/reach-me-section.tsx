@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export function ReachMeSection() {
   return (
-    <section className="flex flex-col items-start justify-center py-10 w-full max-w-2xl">
+    <section className="flex flex-col items-start justify-center py-8 w-full max-w-2xl">
       <motion.h2
         className="text-lg font-newsreader italic text-secondary-foreground my-4"
         initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}

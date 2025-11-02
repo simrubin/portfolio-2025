@@ -31,7 +31,7 @@ export function RightNowSection() {
   return (
     <section
       ref={ref}
-      className="flex flex-col items-start justify-center py-10 w-full max-w-2xl"
+      className="flex flex-col items-start justify-center py-8 w-full max-w-2xl"
     >
       <motion.h2
         className="text-lg font-newsreader italic text-secondary-foreground my-4"

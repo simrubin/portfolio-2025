@@ -2,9 +2,8 @@ import { HeroSection } from "@/components/hero-section";
 import { RightNowSection } from "@/components/right-now-section";
 import { ReachMeSection } from "@/components/reach-me-section";
 import { ProjectsSection } from "@/components/projects-section";
-import { ExperienceSection } from "@/components/experience-section";
+import { ExperienceCommendationsSection } from "@/components/experience-commendations-section";
 import GradualBlur from "@/components/ui/GradualBlur";
-import { CommendationsSection } from "@/components/commendations-section";
 
 export default async function Home() {
   return (
@@ -23,8 +22,7 @@ export default async function Home() {
         <HeroSection />
         <ProjectsSection />
         <RightNowSection />
-        <ExperienceSection />
-        <CommendationsSection />
+        <ExperienceCommendationsSection />
         <ReachMeSection />
       </div>
     </>

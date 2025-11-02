@@ -51,7 +51,7 @@ export function ExperienceSection() {
         Experience.
       </motion.h2>
       <motion.div
-        className="flex flex-col gap-8 md:gap-12 w-full"
+        className="flex flex-col gap-8 md:gap-12 w-full mt-12"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -60,7 +60,7 @@ export function ExperienceSection() {
         {experiences.map((exp, index) => (
           <motion.div
             key={index}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16"
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 0"
             variants={{
               hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
               visible: { opacity: 1, y: 0, filter: "blur(0px)" },
@@ -69,9 +69,7 @@ export function ExperienceSection() {
           >
             {/* Left column */}
             <div className="flex flex-col">
-              <h3 className="text-base text-foreground ">
-                {exp.left.company}
-              </h3>
+              <h3 className="text-base text-foreground ">{exp.left.company}</h3>
               <div className="flex justify-between items-baseline mb-2">
                 <p className="text-base text-secondary-foreground">
                   {exp.left.role}

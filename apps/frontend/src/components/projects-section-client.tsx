@@ -69,7 +69,7 @@ export function ProjectsSectionClient({
                 <Tooltip key={project.id}>
                   <TooltipTrigger asChild>
                     <Link href={`/projects/${project.slug}`}>
-                      <div className="relative w-[200px] h-[120px] md:w-[350px] md:h-[220px] shrink-0 rounded-2xl overflow-hidden bg-muted cursor-pointer transition-transform shadow-md transform ease-in-out hover:scale-102 hover:shadow-lg">
+                      <div className="relative w-[260px] h-[156px] md:w-[350px] md:h-[220px] shrink-0 rounded-2xl overflow-hidden bg-muted cursor-pointer transition-transform shadow-md transform ease-in-out hover:scale-102 hover:shadow-lg">
                         {heroImage && (
                           <Image
                             src={getMediaUrl(heroImage)}
@@ -106,7 +106,7 @@ export function ProjectsSectionClient({
           <GradualBlur preset="left" strength={1} height="10%" width="4rem" divCount={4} />
         </div>
         {/* Left gradient fade */}
-        <div className="absolute left-[-17px] top-0 bottom-0 w-5 h-36 md:h-65 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+        <div className="absolute left-[-17px] top-0 bottom-0 w-5 h-46 md:h-65 bg-gradient-to-r from-background to-transparent pointer-events-none" />
 
         <GradualBlur
           preset="right"
@@ -117,7 +117,7 @@ export function ProjectsSectionClient({
         />
 
         {/* Right gradient fade */}
-        <div className="absolute right-[16px] top-0 bottom-0 w-7 h-36 md:h-65 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+        <div className="absolute right-[16px] top-0 bottom-0 w-7 h-46 md:h-65 bg-gradient-to-l from-background to-transparent pointer-events-none" />
       </motion.div>
     </section>
   );
