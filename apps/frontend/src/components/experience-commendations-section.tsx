@@ -96,8 +96,8 @@ export function ExperienceCommendationsSection() {
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
         I've built impactful products across a range of domains. At Maincode, I
-        designed and developed the Matilda demo interface, helping
-        increase recognition for Australia’s first foundational model. At EY, I delivered
+        designed and developed the Matilda demo interface, helping increase
+        recognition for Australia’s first foundational model. At EY, I delivered
         a production ready React experience that strengthened brand and client
         engagement. I also contributed to on device AI research at Sensilab and
         improved fabrication workflows at Monash. Recognised in the Victorian
@@ -132,11 +132,11 @@ export function ExperienceCommendationsSection() {
                 {/* Experience Section */}
                 <motion.div
                   className="flex flex-col gap-8 md:gap-12 w-full overflow-visible"
-                  initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+                  initial={{ opacity: 0, y: -40, filter: "blur(10px)" }}
                   animate={
                     isOpen === "details"
                       ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                      : { opacity: 0, y: 40, filter: "blur(10px)" }
+                      : { opacity: 0, y: -40, filter: "blur(10px)" }
                   }
                   transition={
                     isOpen === "details"
@@ -145,63 +145,69 @@ export function ExperienceCommendationsSection() {
                   }
                 >
                   <div className="flex flex-col gap-8 md:gap-12 w-full overflow-visible mt-6">
-                    {experiences.map((exp, index) => (
-                      <motion.div
-                        key={index}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 overflow-visible"
-                        initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-                        animate={
-                          isOpen === "details"
-                            ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                            : { opacity: 0, y: 40, filter: "blur(10px)" }
-                        }
-                        transition={
-                          isOpen === "details"
-                            ? {
-                                duration: 0.5,
-                                ease: "easeOut",
-                                delay: 0.2 + index * 0.15,
-                              }
-                            : { duration: 0.15, ease: "easeIn" }
-                        }
-                      >
-                        {/* Left column */}
-                        <div className="flex flex-col">
-                          <h3 className="text-base text-foreground">
-                            {exp.left.company}
-                          </h3>
-                          <div className="flex justify-between items-baseline mb-2">
-                            <p className="text-base text-secondary-foreground">
-                              {exp.left.role}
-                            </p>
-                            <p className="text-base text-accent-foreground ml-4">
-                              {exp.left.year}
-                            </p>
-                          </div>
-                          <p className="text-base text-secondary-foreground leading-relaxed">
-                            {exp.left.description}
-                          </p>
-                        </div>
+                    <div className="flex flex-col gap-4">
+                      <motion.h3 className="text-base font-newsreader italic text-secondary-foreground my-2">
+                        Resume.
+                      </motion.h3>
 
-                        {/* Right column */}
-                        <div className="flex flex-col">
-                          <h3 className="text-base text-foreground">
-                            {exp.right.company}
-                          </h3>
-                          <div className="flex justify-between items-baseline mb-2">
-                            <p className="text-base text-secondary-foreground">
-                              {exp.right.role}
-                            </p>
-                            <p className="text-base text-accent-foreground ml-4">
-                              {exp.right.year}
+                      {experiences.map((exp, index) => (
+                        <motion.div
+                          key={index}
+                          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 overflow-visible"
+                          initial={{ opacity: 0, y: -40, filter: "blur(10px)" }}
+                          animate={
+                            isOpen === "details"
+                              ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                              : { opacity: 0, y: -40, filter: "blur(10px)" }
+                          }
+                          transition={
+                            isOpen === "details"
+                              ? {
+                                  duration: 0.5,
+                                  ease: "easeOut",
+                                  delay: 0.2 + index * 0.15,
+                                }
+                              : { duration: 0.15, ease: "easeIn" }
+                          }
+                        >
+                          {/* Left column */}
+                          <div className="flex flex-col">
+                            <h3 className="text-base text-foreground">
+                              {exp.left.company}
+                            </h3>
+                            <div className="flex justify-between items-baseline mb-2">
+                              <p className="text-base text-secondary-foreground">
+                                {exp.left.role}
+                              </p>
+                              <p className="text-base text-accent-foreground ml-4">
+                                {exp.left.year}
+                              </p>
+                            </div>
+                            <p className="text-base text-secondary-foreground leading-relaxed">
+                              {exp.left.description}
                             </p>
                           </div>
-                          <p className="text-base text-secondary-foreground leading-relaxed">
-                            {exp.right.description}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
+
+                          {/* Right column */}
+                          <div className="flex flex-col">
+                            <h3 className="text-base text-foreground">
+                              {exp.right.company}
+                            </h3>
+                            <div className="flex justify-between items-baseline mb-2">
+                              <p className="text-base text-secondary-foreground">
+                                {exp.right.role}
+                              </p>
+                              <p className="text-base text-accent-foreground ml-4">
+                                {exp.right.year}
+                              </p>
+                            </div>
+                            <p className="text-base text-secondary-foreground leading-relaxed">
+                              {exp.right.description}
+                            </p>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
 
@@ -222,30 +228,42 @@ export function ExperienceCommendationsSection() {
                     },
                   }}
                 >
-                  <div className="flex flex-col w-full overflow-visible">
-                    {awards.map((award, index) => (
-                      <motion.div
-                        key={index}
-                        className="mb-4 overflow-visible"
-                        variants={{
-                          hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
-                          visible: { opacity: 1, y: 0, filter: "blur(0px)" },
-                        }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                      >
-                        <div className="flex gap-2">
-                          <h3 className="text-base text-foreground mb-1">
-                            {award.title}
-                          </h3>
-                          <p className="text-base text-accent-foreground">
-                            {award.year}
+                  <div className="flex flex-col gap-4">
+                    <motion.h3
+                      className="text-base font-newsreader italic text-secondary-foreground my-2"
+                      variants={{
+                        hidden: { opacity: 0, y: -40, filter: "blur(10px)" },
+                        visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+                      }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                    >
+                      Commendations.
+                    </motion.h3>
+                    <div className="flex flex-col w-full overflow-visible">
+                      {awards.map((award, index) => (
+                        <motion.div
+                          key={index}
+                          className="mb-4 overflow-visible"
+                          variants={{
+                            hidden: { opacity: 0, y: -40, filter: "blur(10px)" },
+                            visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+                          }}
+                          transition={{ duration: 0.5, ease: "easeOut" }}
+                        >
+                          <div className="flex gap-2">
+                            <h3 className="text-base text-foreground mb-1">
+                              {award.title}
+                            </h3>
+                            <p className="text-base text-accent-foreground">
+                              {award.year}
+                            </p>
+                          </div>
+                          <p className="text-base text-secondary-foreground">
+                            {award.description}
                           </p>
-                        </div>
-                        <p className="text-base text-secondary-foreground">
-                          {award.description}
-                        </p>
-                      </motion.div>
-                    ))}
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               </div>
