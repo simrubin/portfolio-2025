@@ -256,13 +256,6 @@ const project = await fetch(
 );
 ```
 
-## 📄 Documentation
-
-- [Quick Start Guide](./QUICK_START.md)
-- [Deployment Guide](./DEPLOYMENT.md)
-- [CMS Usage Guide](./CMS_USAGE_GUIDE.md)
-- [Environment Setup](./ENV_SETUP.md)
-
 ## 📞 Contact
 
 **Simeon Rubin**
