@@ -95,8 +95,8 @@ export function ExperienceCommendationsSection() {
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        I build impactful products across a range of industries. At Maincode, I
-        designed and developed the Matilda LLM demo interface, helping
+        I've built impactful products across a range of domains. At Maincode, I
+        designed and developed the Matilda demo interface, helping
         increase recognition for Australia’s first foundational model. At EY, I delivered
         a production ready React experience that strengthened brand and client
         engagement. I also contributed to on device AI research at Sensilab and
