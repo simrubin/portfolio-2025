@@ -32,6 +32,12 @@ export interface ImageSize {
   filename: string;
 }
 
+export interface Category {
+  id: string;
+  title: string;
+  slug: string;
+}
+
 export interface ProjectMediaItem {
   mediaItem: Media | string;
   caption?: string;
@@ -53,6 +59,7 @@ export interface Project {
   publishedAt: string;
   year: number;
   newlyAdded?: boolean;
+  categories?: (Category | string)[];
   sections?: ProjectSection[];
   _status?: "draft" | "published";
   createdAt: string;
@@ -80,6 +87,7 @@ export interface ProjectResponse {
   publishedAt: string;
   year: number;
   newlyAdded?: boolean;
+  categories?: (Category | string)[];
   sections?: ProjectSection[];
   _status?: "draft" | "published";
   createdAt: string;

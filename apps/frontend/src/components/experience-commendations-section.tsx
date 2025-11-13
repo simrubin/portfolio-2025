@@ -245,7 +245,11 @@ export function ExperienceCommendationsSection() {
                           key={index}
                           className="mb-4 overflow-visible"
                           variants={{
-                            hidden: { opacity: 0, y: -40, filter: "blur(10px)" },
+                            hidden: {
+                              opacity: 0,
+                              y: -40,
+                              filter: "blur(10px)",
+                            },
                             visible: { opacity: 1, y: 0, filter: "blur(0px)" },
                           }}
                           transition={{ duration: 0.5, ease: "easeOut" }}

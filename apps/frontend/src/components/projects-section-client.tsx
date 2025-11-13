@@ -14,6 +14,8 @@ import GradualBlur from "@/components/ui/GradualBlur";
 import { getMediaUrl } from "@/lib/payload";
 import type { Project } from "@/types/payload";
 import { useAnimation } from "@/providers/animation-provider";
+import UseAnimations from "react-useanimations";
+import arrowUp from "react-useanimations/lib/arrowUp";
 
 interface ProjectsSectionClientProps {
   projects: Project[];
@@ -32,20 +34,43 @@ export function ProjectsSectionClient({
       id="projects"
       className="flex flex-col items-start justify-center py-8 w-full max-w-2xl"
     >
-      <motion.h2
-        className="text-lg font-newsreader italic text-secondary-foreground my-2"
-        initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
-        animate={staticState}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{
-          duration: hasPlayedInitialAnimation ? 0 : 0.5,
-          ease: "easeOut",
-          delay: hasPlayedInitialAnimation ? 0 : 1.9,
-        }}
-      >
-        Projects.
-      </motion.h2>
-
+      <div className="flex justify-between items-center w-full pr-5">
+        <motion.h2
+          className="text-lg font-newsreader italic text-secondary-foreground my-2"
+          initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
+          animate={staticState}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{
+            duration: hasPlayedInitialAnimation ? 0 : 0.5,
+            ease: "easeOut",
+            delay: hasPlayedInitialAnimation ? 0 : 1.9,
+          }}
+        >
+          Projects.
+        </motion.h2>
+        <motion.h3
+          className="text-sm text-secondary-foreground my-2"
+          initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
+          animate={staticState}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{
+            duration: hasPlayedInitialAnimation ? 0 : 0.5,
+            ease: "easeOut",
+            delay: hasPlayedInitialAnimation ? 0 : 1.9,
+          }}
+        >
+          <span className="inline-flex items-center">
+            Scroll for more{" "}
+            <span className="ml-2 rotate-90">
+              <UseAnimations
+                animation={arrowUp}
+                size={20}
+                strokeColor="var(--secondary-foreground)"
+              />
+            </span>
+          </span>
+        </motion.h3>
+      </div>
       <motion.div
         className="relative w-full mt-2"
         initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
@@ -79,6 +104,27 @@ export function ProjectsSectionClient({
                             sizes="400px"
                           />
                         )}
+                        {/* Category Pills */}
+                        {project.categories &&
+                          project.categories.length > 0 && (
+                            <div className="absolute bottom-2 left-2 flex flex-wrap gap-1.5">
+                              {project.categories.map((category) => {
+                                const cat =
+                                  typeof category === "string"
+                                    ? null
+                                    : category;
+                                if (!cat) return null;
+                                return (
+                                  <span
+                                    key={cat.id}
+                                    className="text-xs px-2.5 py-1 rounded-full font-medium bg-white/90 text-gray-800 backdrop-blur-sm"
+                                  >
+                                    {cat.title}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          )}
                       </div>
                     </Link>
                   </TooltipTrigger>
@@ -103,7 +149,13 @@ export function ProjectsSectionClient({
         </ScrollArea>
 
         <div className="absolute left-[-28px] top-0 bottom-0 w-6">
-          <GradualBlur preset="left" strength={1} height="10%" width="4rem" divCount={4} />
+          <GradualBlur
+            preset="left"
+            strength={1}
+            height="10%"
+            width="4rem"
+            divCount={4}
+          />
         </div>
         {/* Left gradient fade */}
         <div className="absolute left-[-17px] top-0 bottom-0 w-5 h-46 md:h-65 bg-gradient-to-r from-background to-transparent pointer-events-none" />

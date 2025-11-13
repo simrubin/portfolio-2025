@@ -13,7 +13,7 @@ const CMS_URL = process.env.NEXT_PUBLIC_CMS_URL || "http://localhost:3000";
 export async function getAllProjects(): Promise<Project[]> {
   try {
     const response = await fetch(
-      `${CMS_URL}/api/projects?where[_status][equals]=published&limit=100&sort=-publishedAt`,
+      `${CMS_URL}/api/projects?where[_status][equals]=published&limit=100&sort=-publishedAt&depth=1`,
       {
         next: { revalidate: 60 }, // Revalidate every 60 seconds for ISR
       }
