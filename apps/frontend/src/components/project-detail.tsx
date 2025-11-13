@@ -155,7 +155,10 @@ function MediaItem({ media, caption }: MediaItemProps) {
             src={mediaUrl}
             controls
             className="w-full rounded-lg"
-            preload="none"
+            preload="auto"
+            autoPlay={true}
+            muted={true}
+            loop={true}
           >
             Your browser does not support the video tag.
           </video>
