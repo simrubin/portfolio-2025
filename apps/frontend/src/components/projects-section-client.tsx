@@ -16,6 +16,7 @@ import type { Project } from "@/types/payload";
 import { useAnimation } from "@/providers/animation-provider";
 import UseAnimations from "react-useanimations";
 import arrowUp from "react-useanimations/lib/arrowUp";
+import { CategoryPills } from "@/components/category-pills";
 
 interface ProjectsSectionClientProps {
   projects: Project[];
@@ -94,7 +95,7 @@ export function ProjectsSectionClient({
                 <Tooltip key={project.id}>
                   <TooltipTrigger asChild>
                     <Link href={`/projects/${project.slug}`}>
-                      <div className="relative w-[260px] h-[156px] md:w-[350px] md:h-[220px] shrink-0 rounded-2xl overflow-hidden bg-muted cursor-pointer transition-transform shadow-md transform ease-in-out hover:scale-102 hover:shadow-lg">
+                      <div className="relative w-[260px] h-[156px] md:w-[350px] md:h-[220px] shrink-0 rounded-2xl overflow-hidden bg-muted cursor-pointer transition-all shadow-md transform ease-in-out hover:scale-102 hover:shadow-lg">
                         {heroImage && (
                           <Image
                             src={getMediaUrl(heroImage)}
@@ -105,26 +106,11 @@ export function ProjectsSectionClient({
                           />
                         )}
                         {/* Category Pills */}
-                        {project.categories &&
-                          project.categories.length > 0 && (
-                            <div className="absolute bottom-2 left-2 flex flex-wrap gap-1.5">
-                              {project.categories.map((category) => {
-                                const cat =
-                                  typeof category === "string"
-                                    ? null
-                                    : category;
-                                if (!cat) return null;
-                                return (
-                                  <span
-                                    key={cat.id}
-                                    className="text-xs px-2.5 py-1 rounded-full font-medium bg-white/90 text-gray-800 backdrop-blur-sm"
-                                  >
-                                    {cat.title}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          )}
+                        <CategoryPills
+                          categories={project.categories}
+                          variant="overlay"
+                          className="absolute bottom-2 left-2 gap-1 md:gap-1.5"
+                        />
                       </div>
                     </Link>
                   </TooltipTrigger>

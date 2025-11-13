@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import type { ProjectResponse, ProjectSection, Media } from "@/types/payload";
 import { getMediaUrl, isVideo, isImage } from "@/lib/payload";
 import { ImageZoom } from "@/components/kibo-ui/image-zoom";
+import { CategoryPills } from "@/components/category-pills";
 
 interface ProjectDetailProps {
   project: ProjectResponse;
@@ -21,6 +22,12 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
+        {/* Category Pills */}
+        <CategoryPills
+          categories={project.categories}
+          variant="default"
+          className="mb-3"
+        />
         <h1 className="text-base text-foreground mb-1">{project.title}</h1>
         <p className="text-base text-secondary-foreground">
           {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(2, "0")}.${new Date(project.publishedAt).getFullYear()}`}
