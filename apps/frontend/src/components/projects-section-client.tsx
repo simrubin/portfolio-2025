@@ -137,7 +137,7 @@ export function ProjectsSectionClient({
                             project.categories
                           )}
                           variant="overlay"
-                          className="absolute bottom-2 left-2 gap-1 md:gap-1.5"
+                          className="absolute bottom-2 left-2 gap-1 md:gap-1.5 z-[9999]"
                         />
                       </div>
                     </Link>
@@ -162,28 +162,7 @@ export function ProjectsSectionClient({
           <ScrollBar orientation="horizontal" className="z-[9999]" />
         </ScrollArea>
 
-        <div className="absolute left-[-28px] top-0 bottom-0 w-6">
-          <GradualBlur
-            preset="left"
-            strength={1}
-            height="10%"
-            width="4rem"
-            divCount={4}
-          />
-        </div>
-        {/* Left gradient fade */}
-        <div className="absolute left-[-17px] top-0 bottom-0 w-5 h-46 md:h-65 bg-gradient-to-r from-background to-transparent pointer-events-none" />
-
-        <GradualBlur
-          preset="right"
-          strength={1}
-          height="10%"
-          width="4rem"
-          className="right-[16px]"
-        />
-
-        {/* Right gradient fade */}
-        <div className="absolute right-[16px] top-0 bottom-0 w-7 h-46 md:h-65 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+   
       </motion.div>
     </section>
   );
