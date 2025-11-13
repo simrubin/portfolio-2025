@@ -137,7 +137,7 @@ export function ProjectsSectionClient({
                             project.categories
                           )}
                           variant="overlay"
-                          className="absolute bottom-2 left-2 gap-1 md:gap-1.5 z-[9999]"
+                          className="absolute bottom-2 left-2 gap-1 md:gap-1.5 "
                         />
                       </div>
                     </Link>
@@ -161,8 +161,6 @@ export function ProjectsSectionClient({
           </div>
           <ScrollBar orientation="horizontal" className="z-[9999]" />
         </ScrollArea>
-
-   
       </motion.div>
     </section>
   );
