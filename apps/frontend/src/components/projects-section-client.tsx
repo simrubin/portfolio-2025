@@ -17,9 +17,35 @@ import { useAnimation } from "@/providers/animation-provider";
 import UseAnimations from "react-useanimations";
 import arrowUp from "react-useanimations/lib/arrowUp";
 import { CategoryPills } from "@/components/category-pills";
+import type { Category } from "@/types/payload";
 
 interface ProjectsSectionClientProps {
   projects: Project[];
+}
+
+// Helper function to shorten category names for compact display
+function shortenCategoryName(title: string): string {
+  const shorteningMap: Record<string, string> = {
+    "Software Development": "Soft Dev",
+    "Embedded Systems": "Emb Sys",
+    "Industrial Design": "Ind Des",
+  };
+  return shorteningMap[title] || title;
+}
+
+// Create shortened versions of categories for compact display
+function getShortenedCategories(
+  categories?: (Category | string)[]
+): (Category | string)[] | undefined {
+  if (!categories) return undefined;
+
+  return categories.map((category) => {
+    if (typeof category === "string") return category;
+    return {
+      ...category,
+      title: shortenCategoryName(category.title),
+    };
+  });
 }
 
 export function ProjectsSectionClient({
@@ -107,7 +133,9 @@ export function ProjectsSectionClient({
                         )}
                         {/* Category Pills */}
                         <CategoryPills
-                          categories={project.categories}
+                          categories={getShortenedCategories(
+                            project.categories
+                          )}
                           variant="overlay"
                           className="absolute bottom-2 left-2 gap-1 md:gap-1.5"
                         />
