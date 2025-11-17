@@ -81,6 +81,12 @@ export function getMediaUrl(
     return `${CMS_URL}/api/media/file/${media}`;
   }
 
+  // PRIORITY 0: Check for explicit external URL (Cloudinary for videos)
+  // This field is set for migrated videos to bypass Vercel Blob
+  if ((media as any).externalUrl) {
+    return (media as any).externalUrl;
+  }
+
   // PRIORITY 1: If the URL is already absolute (Cloudinary or external), return it directly
   if (media.url && media.url.startsWith("http")) {
     return media.url;
