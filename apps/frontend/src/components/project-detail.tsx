@@ -155,10 +155,14 @@ function MediaItem({ media, caption }: MediaItemProps) {
             src={mediaUrl}
             controls
             className="w-full rounded-lg"
-            preload="auto"
-            autoPlay={true}
-            muted={true}
-            loop={true}
+            preload="metadata"
+            autoPlay
+            muted
+            loop
+            playsInline
+            onError={(e) => {
+              console.error("Video failed to load:", mediaUrl, media);
+            }}
           >
             Your browser does not support the video tag.
           </video>
