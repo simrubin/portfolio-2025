@@ -81,7 +81,12 @@ export function getMediaUrl(
     return `${CMS_URL}/api/media/file/${media}`;
   }
 
-  // Try to use size variant if requested
+  // PRIORITY 1: If the URL is already absolute (Cloudinary or external), return it directly
+  if (media.url && media.url.startsWith("http")) {
+    return media.url;
+  }
+
+  // PRIORITY 2: Try to use size variant if requested (for images)
   if (size && media[`sizes_${size}_url` as keyof Media]) {
     const sizeUrl = media[`sizes_${size}_url` as keyof Media];
     if (typeof sizeUrl === "string" && sizeUrl) {
@@ -92,17 +97,12 @@ export function getMediaUrl(
     }
   }
 
-  // If the URL is already absolute, return it
-  if (media.url && media.url.startsWith("http")) {
-    return media.url;
-  }
-
-  // If it starts with /api, /media, or is a relative path, prepend the CMS URL
+  // PRIORITY 3: If it starts with /api, /media, or is a relative path, prepend the CMS URL
   if (media.url) {
     return `${CMS_URL}${media.url}`;
   }
 
-  // Fallback: use filename
+  // PRIORITY 4: Fallback to filename (for legacy media)
   if (media.filename) {
     return `${CMS_URL}/media/${media.filename}`;
   }
