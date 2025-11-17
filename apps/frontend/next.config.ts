@@ -47,6 +47,16 @@ const nextConfig: NextConfig = {
         hostname: "cms.simeonrubin.com",
         pathname: "/api/media/**",
       },
+      // Vercel Blob Storage
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+      // Cloudinary (video hosting)
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
   },
 };
