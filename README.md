@@ -2,10 +2,10 @@
 
 A modern, CMS-powered portfolio website built with Next.js and Payload CMS. This monorepo project features a beautiful, animated frontend with a headless CMS backend for easy content management.
 
-🌐 **Live Site**: [www.simeonrubin.com](https://www.simeonrubin.com)  
-🛠️ **CMS Admin**: 
+**Live Site**: [www.simeonrubin.com](https://www.simeonrubin.com)  
+**CMS Admin**: 
 
-## ✨ Features
+## Features
 
 ### Frontend Portfolio
 
@@ -24,7 +24,7 @@ A modern, CMS-powered portfolio website built with Next.js and Payload CMS. This
 - **Draft/Preview**: Save drafts and preview before publishing
 - **User Authentication**: Secure admin panel with role-based access
 
-## 📁 Structure
+## Structure
 
 ```
 portfolio-2025/
@@ -48,7 +48,7 @@ portfolio-2025/
 └── package.json          # Root workspace configuration
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -124,7 +124,7 @@ Frontend site: `http://localhost:3001` (or next available port)
 - Click "Create New"
 - Fill in project details, add images, and publish!
 
-## 📦 CMS Project Structure
+## CMS Project Structure
 
 The **Projects** collection in Payload CMS uses the following schema:
 
@@ -157,7 +157,7 @@ This flexible structure allows for:
 - Image galleries with optional captions
 - Draft mode for work-in-progress projects
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -203,7 +203,7 @@ npm run start:frontend
 npm run start:cms
 ```
 
-## 📝 Content Management
+## Content Management
 
 ### Adding a New Project
 
@@ -226,7 +226,7 @@ Changes will appear on the frontend within 60 seconds (ISR revalidation).
 - Automatically optimized by Next.js Image component
 - Alternative text for accessibility
 
-## 🔧 Development Scripts
+## Development Scripts
 
 ```bash
 # Root level commands
@@ -240,7 +240,7 @@ npm --workspace=apps/frontend run dev
 npm --workspace=apps/cms run dev
 ```
 
-## 📚 API Reference
+## API Reference
 
 ### Fetching Projects
 
@@ -256,7 +256,7 @@ const project = await fetch(
 );
 ```
 
-## 📞 Contact
+## Contact
 
 **Simeon Rubin**
 
