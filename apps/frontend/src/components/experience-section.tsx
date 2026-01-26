@@ -8,7 +8,7 @@ export function ExperienceSection() {
     {
       left: {
         company: "Maincode",
-        role: "Software Engineer Intern",
+        role: "Design Engineer",
         year: "2025",
         description:
           "Rebuilt and redesigned Maincode's primary website in Next.js with a modern design system. Shaped the Matilda brand identity and built a motion-rich component library and frontend demo for the Matilda LLM.",
