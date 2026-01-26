@@ -125,7 +125,7 @@ const getGradientDirection = (position: string): string => {
   return directions[position] || "to bottom";
 };
 
-const debounce = <T extends (...a: any[]) => void>(fn: T, wait: number) => {
+const debounce = <T extends (...a: unknown[]) => void>(fn: T, wait: number) => {
   let t: ReturnType<typeof setTimeout>;
   return (...a: Parameters<T>) => {
     clearTimeout(t);
@@ -137,20 +137,20 @@ const useResponsiveDimension = (
   config: Partial<GradualBlurProps>,
   key: keyof GradualBlurProps
 ) => {
-  const [val, setVal] = useState<any>(config[key]);
+  const [val, setVal] = useState<unknown>(config[key]);
   useEffect(() => {
     if (!responsive) return;
     const calc = () => {
       const w = window.innerWidth;
-      let v: any = config[key];
+      let v: unknown = config[key];
       const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
       const k = cap(key as string);
-      if (w <= 480 && (config as any)["mobile" + k])
-        v = (config as any)["mobile" + k];
-      else if (w <= 768 && (config as any)["tablet" + k])
-        v = (config as any)["tablet" + k];
-      else if (w <= 1024 && (config as any)["desktop" + k])
-        v = (config as any)["desktop" + k];
+      if (w <= 480 && (config as Record<string, unknown>)["mobile" + k])
+        v = (config as Record<string, unknown>)["mobile" + k];
+      else if (w <= 768 && (config as Record<string, unknown>)["tablet" + k])
+        v = (config as Record<string, unknown>)["tablet" + k];
+      else if (w <= 1024 && (config as Record<string, unknown>)["desktop" + k])
+        v = (config as Record<string, unknown>)["desktop" + k];
       setVal(v);
     };
     const deb = debounce(calc, 100);
@@ -158,7 +158,7 @@ const useResponsiveDimension = (
     window.addEventListener("resize", deb);
     return () => window.removeEventListener("resize", deb);
   }, [responsive, config, key]);
-  return responsive ? val : (config as any)[key];
+  return (responsive ? val : (config as Record<string, unknown>)[key]) as string | undefined;
 };
 
 const useIntersectionObserver = (
@@ -236,10 +236,10 @@ const GradualBlur: React.FC<GradualBlurProps> = (props) => {
         blurValue = 0.0625 * (progress * config.divCount + 1) * currentStrength;
       }
 
-      const p1 = math.round((increment * i - increment) * 10) / 10;
-      const p2 = math.round(increment * i * 10) / 10;
-      const p3 = math.round((increment * i + increment) * 10) / 10;
-      const p4 = math.round((increment * i + increment * 2) * 10) / 10;
+      const p1 = (math.round((increment * i - increment) * 10) as number) / 10;
+      const p2 = (math.round(increment * i * 10) as number) / 10;
+      const p3 = (math.round((increment * i + increment) * 10) as number) / 10;
+      const p4 = (math.round((increment * i + increment * 2) * 10) as number) / 10;
 
       let gradient = `transparent ${p1}%, black ${p2}%`;
       if (p3 <= 100) gradient += `, black ${p3}%`;
@@ -298,12 +298,12 @@ const GradualBlur: React.FC<GradualBlurProps> = (props) => {
   }, [config, responsiveHeight, responsiveWidth, isVisible]);
 
   const { hoverIntensity, animated, onAnimationComplete, duration } =
-    config as any;
+    config as { hoverIntensity?: number; animated?: boolean | "scroll"; onAnimationComplete?: () => void; duration?: string | number };
   useEffect(() => {
     if (isVisible && animated === "scroll" && onAnimationComplete) {
       const t = setTimeout(
         () => onAnimationComplete(),
-        parseFloat(duration) * 1000
+        parseFloat(String(duration)) * 1000
       );
       return () => clearTimeout(t);
     }
@@ -325,8 +325,8 @@ const GradualBlur: React.FC<GradualBlurProps> = (props) => {
 
 const GradualBlurMemo = React.memo(GradualBlur);
 GradualBlurMemo.displayName = "GradualBlur";
-(GradualBlurMemo as any).PRESETS = PRESETS;
-(GradualBlurMemo as any).CURVE_FUNCTIONS = CURVE_FUNCTIONS;
+(GradualBlurMemo as unknown as Record<string, unknown>).PRESETS = PRESETS;
+(GradualBlurMemo as unknown as Record<string, unknown>).CURVE_FUNCTIONS = CURVE_FUNCTIONS;
 export default GradualBlurMemo;
 
 const injectStyles = () => {

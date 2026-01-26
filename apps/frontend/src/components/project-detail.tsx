@@ -160,7 +160,7 @@ function MediaItem({ media, caption }: MediaItemProps) {
             muted
             loop
             playsInline
-            onError={(e) => {
+            onError={() => {
               console.error("Video failed to load:", mediaUrl, media);
             }}
           >
@@ -227,7 +227,7 @@ function MediaItem({ media, caption }: MediaItemProps) {
 }
 
 interface RichTextRendererProps {
-  content: any;
+  content: Record<string, unknown>;
 }
 
 function RichTextRenderer({ content }: RichTextRendererProps) {
@@ -235,12 +235,12 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
     return null;
   }
 
-  const renderNode = (node: any): React.ReactNode => {
+  const renderNode = (node: Record<string, unknown>): React.ReactNode => {
     if (!node) return null;
 
     // Handle text nodes
     if (node.type === "text") {
-      const text = node.text;
+      const text = node.text as string | undefined;
 
       // Return empty string for empty text nodes instead of null
       if (!text) return "";
@@ -249,16 +249,17 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
       let formattedText: React.ReactNode = text;
 
       if (node.format) {
-        if (node.format & 4) formattedText = <u>{formattedText}</u>; // Underline
-        if (node.format & 2) formattedText = <em>{formattedText}</em>; // Italic
-        if (node.format & 1) formattedText = <strong>{formattedText}</strong>; // Bold
+        const format = node.format as number;
+        if (format & 4) formattedText = <u>{formattedText}</u>; // Underline
+        if (format & 2) formattedText = <em>{formattedText}</em>; // Italic
+        if (format & 1) formattedText = <strong>{formattedText}</strong>; // Bold
       }
 
       return formattedText;
     }
 
     // Handle element nodes
-    const children = node.children?.map((child: any, index: number) => (
+    const children = (node.children as Record<string, unknown>[])?.map((child: Record<string, unknown>, index: number) => (
       <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
     ));
 
@@ -267,10 +268,10 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
         // Render empty paragraphs to preserve spacing
         return <p>{children && children.length > 0 ? children : <br />}</p>;
       case "heading":
-        const HeadingTag = `h${node.tag}` as keyof React.JSX.IntrinsicElements;
+        const HeadingTag = `h${node.tag as string}` as keyof React.JSX.IntrinsicElements;
         return React.createElement(HeadingTag, {}, children);
       case "list":
-        return node.listType === "bullet" ? (
+        return (node.listType as string) === "bullet" ? (
           <ul>{children}</ul>
         ) : (
           <ol>{children}</ol>
@@ -282,7 +283,7 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
       case "link":
         return (
           <a
-            href={node.fields?.url}
+            href={node.fields ? (node.fields as Record<string, unknown>).url as string : "#"}
             target="_blank"
             rel="noopener noreferrer"
             className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:decoration-foreground transition-all"
@@ -297,7 +298,7 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
     }
   };
 
-  return <>{renderNode(content.root)}</>;
+  return <>{renderNode((content.root as Record<string, unknown>) || {})}</>;
 }
 
 // Helper function to generate section IDs from titles

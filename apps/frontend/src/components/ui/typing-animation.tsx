@@ -133,6 +133,7 @@ export function TypingAnimation({
     deletingSpeed,
     pauseDelay,
     delay,
+    skipAnimation,
   ]);
 
   const currentWordGraphemes = Array.from(

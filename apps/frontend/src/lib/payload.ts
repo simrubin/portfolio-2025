@@ -83,8 +83,8 @@ export function getMediaUrl(
 
   // PRIORITY 0: Check for explicit external URL (Cloudinary for videos)
   // This field is set for migrated videos to bypass Vercel Blob
-  if ((media as any).externalUrl) {
-    return (media as any).externalUrl;
+  if ((media as unknown as Record<string, unknown>).externalUrl) {
+    return (media as unknown as Record<string, unknown>).externalUrl as string;
   }
 
   // PRIORITY 1: If the URL is already absolute (Cloudinary or external), return it directly
@@ -93,8 +93,8 @@ export function getMediaUrl(
   }
 
   // PRIORITY 2: Try to use size variant if requested (for images)
-  if (size && media[`sizes_${size}_url` as keyof Media]) {
-    const sizeUrl = media[`sizes_${size}_url` as keyof Media];
+  if (size && (media as unknown as Record<string, unknown>)[`sizes_${size}_url`]) {
+    const sizeUrl = (media as unknown as Record<string, unknown>)[`sizes_${size}_url`];
     if (typeof sizeUrl === "string" && sizeUrl) {
       if (sizeUrl.startsWith("http")) {
         return sizeUrl;

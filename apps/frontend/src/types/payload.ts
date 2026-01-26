@@ -46,7 +46,7 @@ export interface ProjectMediaItem {
 
 export interface ProjectSection {
   sectionTitle: string;
-  textBody: any; // Lexical rich text content
+  textBody: Record<string, unknown>; // Lexical rich text content
   media?: ProjectMediaItem[];
   id?: string;
 }

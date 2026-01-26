@@ -10,7 +10,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import GradualBlur from "@/components/ui/GradualBlur";
 import { getMediaUrl } from "@/lib/payload";
 import type { Project } from "@/types/payload";
 import { useAnimation } from "@/providers/animation-provider";

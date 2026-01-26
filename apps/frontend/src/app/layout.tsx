@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Inter_Tight, Newsreader } from "next/font/google";
 import { MoreHorizontal } from "lucide-react";
 import "./globals.css";
@@ -37,14 +37,13 @@ export const metadata: Metadata = {
       "A range of projects made by Simeon Rubin, a Designer and Developer",
     url: "https://simeonrubin.com",
   },
-};
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: "cover",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: "cover",
+  },
 };
 
 export default function RootLayout({
