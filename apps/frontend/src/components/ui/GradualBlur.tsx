@@ -158,7 +158,9 @@ const useResponsiveDimension = (
     window.addEventListener("resize", deb);
     return () => window.removeEventListener("resize", deb);
   }, [responsive, config, key]);
-  return (responsive ? val : (config as Record<string, unknown>)[key]) as string | undefined;
+  return (responsive ? val : (config as Record<string, unknown>)[key]) as
+    | string
+    | undefined;
 };
 
 const useIntersectionObserver = (
@@ -239,7 +241,8 @@ const GradualBlur: React.FC<GradualBlurProps> = (props) => {
       const p1 = (math.round((increment * i - increment) * 10) as number) / 10;
       const p2 = (math.round(increment * i * 10) as number) / 10;
       const p3 = (math.round((increment * i + increment) * 10) as number) / 10;
-      const p4 = (math.round((increment * i + increment * 2) * 10) as number) / 10;
+      const p4 =
+        (math.round((increment * i + increment * 2) * 10) as number) / 10;
 
       let gradient = `transparent ${p1}%, black ${p2}%`;
       if (p3 <= 100) gradient += `, black ${p3}%`;
@@ -298,7 +301,12 @@ const GradualBlur: React.FC<GradualBlurProps> = (props) => {
   }, [config, responsiveHeight, responsiveWidth, isVisible]);
 
   const { hoverIntensity, animated, onAnimationComplete, duration } =
-    config as { hoverIntensity?: number; animated?: boolean | "scroll"; onAnimationComplete?: () => void; duration?: string | number };
+    config as {
+      hoverIntensity?: number;
+      animated?: boolean | "scroll";
+      onAnimationComplete?: () => void;
+      duration?: string | number;
+    };
   useEffect(() => {
     if (isVisible && animated === "scroll" && onAnimationComplete) {
       const t = setTimeout(
@@ -312,7 +320,9 @@ const GradualBlur: React.FC<GradualBlurProps> = (props) => {
   return (
     <div
       ref={containerRef}
-      className={`gradual-blur relative isolate ${config.target === "page" ? "gradual-blur-page" : "gradual-blur-parent"} ${config.className}`}
+      className={`gradual-blur relative isolate ${
+        config.target === "page" ? "gradual-blur-page" : "gradual-blur-parent"
+      } ${config.className}`}
       style={containerStyle}
       onMouseEnter={hoverIntensity ? () => setIsHovered(true) : undefined}
       onMouseLeave={hoverIntensity ? () => setIsHovered(false) : undefined}
@@ -326,7 +336,8 @@ const GradualBlur: React.FC<GradualBlurProps> = (props) => {
 const GradualBlurMemo = React.memo(GradualBlur);
 GradualBlurMemo.displayName = "GradualBlur";
 (GradualBlurMemo as unknown as Record<string, unknown>).PRESETS = PRESETS;
-(GradualBlurMemo as unknown as Record<string, unknown>).CURVE_FUNCTIONS = CURVE_FUNCTIONS;
+(GradualBlurMemo as unknown as Record<string, unknown>).CURVE_FUNCTIONS =
+  CURVE_FUNCTIONS;
 export default GradualBlurMemo;
 
 const injectStyles = () => {

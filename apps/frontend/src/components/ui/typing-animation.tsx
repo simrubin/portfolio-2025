@@ -78,10 +78,10 @@ export function TypingAnimation({
       delay > 0 && displayedText === ""
         ? delay
         : phase === "typing"
-          ? typingSpeed
-          : phase === "deleting"
-            ? deletingSpeed
-            : pauseDelay;
+        ? typingSpeed
+        : phase === "deleting"
+        ? deletingSpeed
+        : pauseDelay;
 
     const timeout = setTimeout(() => {
       const currentWord = wordsToAnimate[currentWordIndex] || "";

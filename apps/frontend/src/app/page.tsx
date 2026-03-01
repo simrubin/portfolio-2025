@@ -21,7 +21,7 @@ export default async function Home() {
       <div className="flex flex-col items-center justify-center max-w-xs md:max-w-5xl mx-auto min-h-screen py-20 md:py-40">
         <HeroSection />
         <ProjectsSection />
-        <RightNowSection />
+        {/* <RightNowSection /> */}
         <ExperienceCommendationsSection />
         <ReachMeSection />
       </div>

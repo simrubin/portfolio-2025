@@ -93,8 +93,13 @@ export function getMediaUrl(
   }
 
   // PRIORITY 2: Try to use size variant if requested (for images)
-  if (size && (media as unknown as Record<string, unknown>)[`sizes_${size}_url`]) {
-    const sizeUrl = (media as unknown as Record<string, unknown>)[`sizes_${size}_url`];
+  if (
+    size &&
+    (media as unknown as Record<string, unknown>)[`sizes_${size}_url`]
+  ) {
+    const sizeUrl = (media as unknown as Record<string, unknown>)[
+      `sizes_${size}_url`
+    ];
     if (typeof sizeUrl === "string" && sizeUrl) {
       if (sizeUrl.startsWith("http")) {
         return sizeUrl;

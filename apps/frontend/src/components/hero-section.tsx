@@ -31,7 +31,7 @@ export function HeroSection() {
         Simeon Rubin.
       </TypingAnimation>
       <div className="flex flex-wrap gap-x-2 ">
-        <motion.span
+        {/* <motion.span
           className="text-2xl font-newsreader text-secondary-foreground"
           initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
           animate={staticState}
@@ -43,7 +43,7 @@ export function HeroSection() {
           }}
         >
           Software Developer.
-        </motion.span>
+        </motion.span> */}
         <motion.span
           className="text-2xl font-newsreader text-secondary-foreground"
           initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
@@ -55,20 +55,15 @@ export function HeroSection() {
             delay: hasPlayedInitialAnimation ? 0 : 1.5,
           }}
         >
-          Design Engineer.
-        </motion.span>
-        <motion.span
-          className="text-2xl font-newsreader text-secondary-foreground"
-          initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
-          animate={staticState}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{
-            duration: hasPlayedInitialAnimation ? 0 : 0.5,
-            ease: "easeOut",
-            delay: hasPlayedInitialAnimation ? 0 : 1.6,
-          }}
-        >
-          Industrial Designer.
+          Design Engineer. Creating digital experiences at{" "}
+          <a
+            href="https://www.deloittedigital.com/au/en.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="italic underline decoration-wavy decoration-1 text-foreground decoration-accent-foreground  underline-offset-2 hover:decoration-foreground transition-all ease-in-out duration-100"
+          >
+            Deloitte Digital
+          </a>{" "}
         </motion.span>
       </div>
       <motion.p
@@ -82,9 +77,9 @@ export function HeroSection() {
           delay: hasPlayedInitialAnimation ? 0 : 1.8,
         }}
       >
-        I design and build experiences across hardware and software, guided by
-        the belief that tech should be built with craft, empathy and just the
-        right amount of fun.{" "}
+        I design and build across hardware and software, guided by the belief
+        that tech should be built with craft, empathy and just the right amount
+        of fun.{" "}
       </motion.p>
     </section>
   );

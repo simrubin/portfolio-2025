@@ -58,10 +58,10 @@ export function RightNowSection() {
           delay: paragraphDelay,
         }}
       >
-        I&apos;m currently in between roles, taking time to explore new technologies
-        and refine my skills across design and development. This period has
-        given me space to learn, experiment, and focus on building projects that
-        challenge my creativity and technical thinking.
+        I&apos;m currently in between roles, taking time to explore new
+        technologies and refine my skills across design and development. This
+        period has given me space to learn, experiment, and focus on building
+        projects that challenge my creativity and technical thinking.
       </motion.p>
     </section>
   );

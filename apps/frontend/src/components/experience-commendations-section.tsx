@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useAnimation } from "@/providers/animation-provider";
 
 const experiences = [
   {
@@ -75,42 +76,59 @@ const awards = [
 ];
 
 export function ExperienceCommendationsSection() {
+  const { hasPlayedInitialAnimation } = useAnimation();
+
+  const staticState = { opacity: 1, y: 0, filter: "blur(0px)" };
+  const animatedInitial = { opacity: 0, y: 40, filter: "blur(10px)" };
+
   const [isOpen, setIsOpen] = useState<string | undefined>(undefined);
 
   return (
     <section className="flex flex-col items-start justify-center py-8 w-full max-w-2xl">
       <motion.h2
         className="text-lg font-newsreader italic text-secondary-foreground my-4"
-        initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
+        animate={staticState}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{
+          duration: hasPlayedInitialAnimation ? 0 : 0.5,
+          ease: "easeOut",
+          delay: hasPlayedInitialAnimation ? 0 : 2.5,
+        }}
       >
         Experience.
       </motion.h2>
       <motion.p
         className="text-base text-secondary-foreground leading-relaxed mb-4"
-        initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
+        animate={staticState}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{
+          duration: hasPlayedInitialAnimation ? 0 : 0.5,
+          ease: "easeOut",
+          delay: hasPlayedInitialAnimation ? 0 : 2.5,
+        }}
       >
-        I&apos;ve built impactful products across a range of domains. At Maincode, I
-        designed and developed the Matilda demo interface, helping increase
-        recognition for Australia&apos;s first foundational model. At EY, I delivered
-        a production ready React experience that strengthened brand and client
-        engagement. I also contributed to on device AI research at Sensilab and
-        improved fabrication workflows at Monash. Recognised in the Victorian
-        Premier&apos;s Design Awards, Global Graduate Showcase, and by Monash
-        University.
+        I&apos;ve built impactful products across a range of domains. At
+        Maincode, I designed and developed the Matilda demo interface, helping
+        increase recognition for Australia&apos;s first foundational model. At
+        EY, I delivered a production ready React experience that strengthened
+        brand and client engagement. I also contributed to on device AI research
+        at Sensilab and improved fabrication workflows at Monash. Recognised in
+        the Victorian Premier&apos;s Design Awards, Global Graduate Showcase,
+        and by Monash University.
       </motion.p>
 
       <motion.div
         className="w-full"
-        initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
+        animate={staticState}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+        transition={{
+          duration: hasPlayedInitialAnimation ? 0 : 0.5,
+          ease: "easeOut",
+          delay: hasPlayedInitialAnimation ? 0 : 2.7,
+        }}
       >
         <Accordion
           type="single"
@@ -214,18 +232,15 @@ export function ExperienceCommendationsSection() {
                 {/* Commendations Section */}
                 <motion.div
                   className="flex flex-col w-full overflow-visible"
-                  initial="hidden"
+                  initial={
+                    hasPlayedInitialAnimation ? staticState : animatedInitial
+                  }
+                  animate={staticState}
                   whileInView="visible"
                   viewport={{ once: true, amount: 0.3 }}
-                  variants={{
-                    hidden: { opacity: 0 },
-                    visible: {
-                      opacity: 1,
-                      transition: {
-                        staggerChildren: 0.1,
-                        delayChildren: 0.2,
-                      },
-                    },
+                  transition={{
+                    staggerChildren: hasPlayedInitialAnimation ? 0 : 0.1,
+                    delayChildren: hasPlayedInitialAnimation ? 0 : 0.2,
                   }}
                 >
                   <div className="flex flex-col gap-4">

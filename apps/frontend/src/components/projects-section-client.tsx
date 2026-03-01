@@ -34,7 +34,7 @@ function shortenCategoryName(title: string): string {
 
 // Create shortened versions of categories for compact display
 function getShortenedCategories(
-  categories?: (Category | string)[]
+  categories?: (Category | string)[],
 ): (Category | string)[] | undefined {
   if (!categories) return undefined;
 
@@ -58,7 +58,7 @@ export function ProjectsSectionClient({
   return (
     <section
       id="projects"
-      className="flex flex-col items-start justify-center py-8 w-full max-w-2xl"
+      className="flex flex-col items-start justify-center py-6 w-full max-w-2xl"
     >
       <div className="flex justify-between items-center w-full pr-5">
         <motion.h2
@@ -133,7 +133,7 @@ export function ProjectsSectionClient({
                         {/* Category Pills */}
                         <CategoryPills
                           categories={getShortenedCategories(
-                            project.categories
+                            project.categories,
                           )}
                           variant="overlay"
                           className="absolute bottom-2 left-2 gap-1 md:gap-1.5 "

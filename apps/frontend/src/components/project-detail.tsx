@@ -30,7 +30,10 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         />
         <h1 className="text-base text-foreground mb-1">{project.title}</h1>
         <p className="text-base text-secondary-foreground">
-          {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(2, "0")}.${new Date(project.publishedAt).getFullYear()}`}
+          {`${String(new Date(project.publishedAt).getMonth() + 1).padStart(
+            2,
+            "0"
+          )}.${new Date(project.publishedAt).getFullYear()}`}
         </p>
       </motion.div>
 
@@ -259,16 +262,20 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
     }
 
     // Handle element nodes
-    const children = (node.children as Record<string, unknown>[])?.map((child: Record<string, unknown>, index: number) => (
-      <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
-    ));
+    const children = (node.children as Record<string, unknown>[])?.map(
+      (child: Record<string, unknown>, index: number) => (
+        <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
+      )
+    );
 
     switch (node.type) {
       case "paragraph":
         // Render empty paragraphs to preserve spacing
         return <p>{children && children.length > 0 ? children : <br />}</p>;
       case "heading":
-        const HeadingTag = `h${node.tag as string}` as keyof React.JSX.IntrinsicElements;
+        const HeadingTag = `h${
+          node.tag as string
+        }` as keyof React.JSX.IntrinsicElements;
         return React.createElement(HeadingTag, {}, children);
       case "list":
         return (node.listType as string) === "bullet" ? (
@@ -283,7 +290,11 @@ function RichTextRenderer({ content }: RichTextRendererProps) {
       case "link":
         return (
           <a
-            href={node.fields ? (node.fields as Record<string, unknown>).url as string : "#"}
+            href={
+              node.fields
+                ? ((node.fields as Record<string, unknown>).url as string)
+                : "#"
+            }
             target="_blank"
             rel="noopener noreferrer"
             className="text-foreground underline decoration-wavy decoration-1 decoration-accent-foreground font-regular underline-offset-2 ease-in-out hover:decoration-foreground transition-all"

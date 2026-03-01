@@ -2,8 +2,14 @@
 
 import { motion } from "motion/react";
 import React from "react";
+import { useAnimation } from "@/providers/animation-provider";
 
 export function ExperienceSection() {
+  const { hasPlayedInitialAnimation } = useAnimation();
+
+  const staticState = { opacity: 1, y: 0, filter: "blur(0px)" };
+  const animatedInitial = { opacity: 0, y: 40, filter: "blur(10px)" };
+
   const experiences = [
     {
       left: {
@@ -43,29 +49,36 @@ export function ExperienceSection() {
     <section className="flex flex-col items-start justify-center py-10 w-full max-w-2xl">
       <motion.h2
         className="text-lg font-newsreader italic text-secondary-foreground my-4"
-        initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
+        animate={staticState}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{
+          duration: hasPlayedInitialAnimation ? 0 : 0.5,
+          ease: "easeOut",
+        }}
       >
         Experience.
       </motion.h2>
       <motion.div
         className="flex flex-col gap-8 md:gap-12 w-full mt-12"
-        initial="hidden"
-        whileInView="visible"
+        initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
+        animate={staticState}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ staggerChildren: 0.15 }}
+        transition={{
+          staggerChildren: hasPlayedInitialAnimation ? 0 : 0.15,
+        }}
       >
         {experiences.map((exp, index) => (
           <motion.div
             key={index}
             className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 0"
-            variants={{
-              hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
-              visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+            initial={hasPlayedInitialAnimation ? staticState : animatedInitial}
+            animate={staticState}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{
+              duration: hasPlayedInitialAnimation ? 0 : 0.5,
+              ease: "easeOut",
             }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
           >
             {/* Left column */}
             <div className="flex flex-col">
