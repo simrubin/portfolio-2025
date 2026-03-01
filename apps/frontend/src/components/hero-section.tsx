@@ -55,7 +55,7 @@ export function HeroSection() {
             delay: hasPlayedInitialAnimation ? 0 : 1.5,
           }}
         >
-          Design Engineer. Creating digital experiences at{" "}
+          Design Engineer, creating digital experiences at{" "}
           <a
             href="https://www.deloittedigital.com/au/en.html"
             target="_blank"
